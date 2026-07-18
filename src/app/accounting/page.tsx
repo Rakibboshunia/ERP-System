@@ -157,6 +157,7 @@ export default function AccountingPage() {
                 <div><CardTitle>Journal Entries</CardTitle><CardDescription>Double-entry bookkeeping records.</CardDescription></div>
                 {canManage && <Button size="sm"><Plus className="w-4 h-4 mr-1" />New Entry</Button>}
               </div>
+              
             </CardHeader>
             <CardContent>
               <Table>
@@ -193,6 +194,7 @@ export default function AccountingPage() {
                 <div className="relative w-48"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Filter account..." className="pl-8" /></div>
               </div>
             </CardHeader>
+            
             <CardContent>
               <Table>
                 <TableHeader><TableRow><TableHead>Date</TableHead><TableHead>Description</TableHead><TableHead className="text-right">Debit</TableHead><TableHead className="text-right">Credit</TableHead><TableHead className="text-right">Balance</TableHead></TableRow></TableHeader>
