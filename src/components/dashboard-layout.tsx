@@ -15,6 +15,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
+      
       <main className="w-full min-h-screen flex flex-col overflow-x-hidden">
         <header className="h-16 flex items-center px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
           <SidebarTrigger />
@@ -26,6 +27,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+      
     </SidebarProvider>
   )
 }
