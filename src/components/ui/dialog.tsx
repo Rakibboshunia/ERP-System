@@ -11,8 +11,32 @@ function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
-function DialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
+function DialogTrigger({
+  asChild,
+  children,
+  render,
+  ...props
+}: DialogPrimitive.Trigger.Props & { asChild?: boolean }) {
+  // Base UI uses render prop instead of asChild.
+  // When asChild is passed (Radix pattern), extract the single child element
+  // and use it as the render target so we avoid button-in-button nesting.
+  const resolvedRender = asChild && React.isValidElement(children)
+    ? (children as React.ReactElement)
+    : render
+
+  const resolvedChildren = asChild && React.isValidElement(children)
+    ? (children as React.ReactElement).props.children
+    : children
+
+  return (
+    <DialogPrimitive.Trigger
+      data-slot="dialog-trigger"
+      render={resolvedRender}
+      {...props}
+    >
+      {resolvedChildren}
+    </DialogPrimitive.Trigger>
+  )
 }
 
 function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {

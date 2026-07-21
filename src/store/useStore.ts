@@ -72,6 +72,37 @@ export interface LeaveRequest {
   status: "Approved" | "Pending" | "Rejected"
 }
 
+export interface ReturnRequest {
+  id: string
+  invoiceRef: string
+  customer: string
+  items: number
+  reason: string
+  amount: string
+  date: string
+  status: "Approved" | "Pending" | "Rejected"
+}
+
+export interface SupplierRating {
+  id: string
+  name: string
+  onTime: number
+  quality: number
+  responseTime: string
+  returns: number
+  overall: number
+}
+
+export interface SupplierPayment {
+  id: string
+  supplier: string
+  invoiceNo: string
+  amount: string
+  dueDate: string
+  daysLeft: number
+  status: "Upcoming" | "Due Soon" | "Overdue" | "Paid"
+}
+
 // ----- STORE INTERFACE -----
 interface AppState {
   // Global App State
@@ -113,6 +144,23 @@ interface AppState {
   leaveRequests: LeaveRequest[]
   addLeaveRequest: (lr: LeaveRequest) => void
   updateLeaveRequestStatus: (id: string, status: "Approved" | "Pending" | "Rejected") => void
+
+  // Sales Management State
+  returns: ReturnRequest[]
+  addReturn: (ret: ReturnRequest) => void
+  updateReturnStatus: (id: string, status: "Approved" | "Pending" | "Rejected") => void
+  deleteReturn: (id: string) => void
+
+  // Supplier Management State
+  supplierRatings: SupplierRating[]
+  addSupplierRating: (rating: SupplierRating) => void
+  updateSupplierRating: (id: string, data: Partial<SupplierRating>) => void
+  deleteSupplierRating: (id: string) => void
+
+  supplierPayments: SupplierPayment[]
+  addSupplierPayment: (payment: SupplierPayment) => void
+  updateSupplierPaymentStatus: (id: string, status: "Upcoming" | "Due Soon" | "Overdue" | "Paid") => void
+  deleteSupplierPayment: (id: string) => void
 }
 
 export const useStore = create<AppState>()(
@@ -203,6 +251,42 @@ export const useStore = create<AppState>()(
       updateLeaveRequestStatus: (id, status) => set((state) => ({
         leaveRequests: state.leaveRequests.map(lr => lr.id === id ? { ...lr, status } : lr)
       })),
+
+      // --- SALES MANAGEMENT STATE ---
+      returns: [
+        { id: "RMA-6001", invoiceRef: "INV-4202", customer: "Stark Industries", items: 2, reason: "Defective unit", amount: "$9,000.00", date: "Oct 19, 2026", status: "Approved" },
+        { id: "RMA-6002", invoiceRef: "INV-4201", customer: "Acme Corp", items: 1, reason: "Wrong item shipped", amount: "$2,480.00", date: "Oct 20, 2026", status: "Pending" },
+        { id: "RMA-6003", invoiceRef: "INV-4203", customer: "Oscorp", items: 3, reason: "Customer changed mind", amount: "$1,620.00", date: "Oct 15, 2026", status: "Rejected" },
+      ],
+      addReturn: (ret) => set((state) => ({ returns: [...state.returns, ret] })),
+      updateReturnStatus: (id, status) => set((state) => ({
+        returns: state.returns.map(r => r.id === id ? { ...r, status } : r)
+      })),
+      deleteReturn: (id) => set((state) => ({ returns: state.returns.filter(r => r.id !== id) })),
+
+      // --- SUPPLIER MANAGEMENT STATE ---
+      supplierRatings: [
+        { id: "SUP-001", name: "TechParts Inc.", onTime: 96, quality: 4.7, responseTime: "< 2 hours", returns: 1.2, overall: 4.8 },
+        { id: "SUP-002", name: "Global Steel Co.", onTime: 88, quality: 4.3, responseTime: "< 4 hours", returns: 3.1, overall: 4.1 },
+        { id: "SUP-003", name: "FastShip Logistics", onTime: 72, quality: 3.5, responseTime: "< 1 day", returns: 8.4, overall: 3.2 },
+        { id: "SUP-004", name: "OfficeWorld Supplies", onTime: 99, quality: 4.9, responseTime: "< 1 hour", returns: 0.5, overall: 4.9 },
+      ],
+      addSupplierRating: (rating) => set((state) => ({ supplierRatings: [...state.supplierRatings, rating] })),
+      updateSupplierRating: (id, data) => set((state) => ({
+        supplierRatings: state.supplierRatings.map(r => r.id === id ? { ...r, ...data } : r)
+      })),
+      deleteSupplierRating: (id) => set((state) => ({ supplierRatings: state.supplierRatings.filter(r => r.id !== id) })),
+
+      supplierPayments: [
+        { id: "PAY-201", supplier: "TechParts Inc.", invoiceNo: "INV-8844", amount: "$14,200.00", dueDate: "Oct 25, 2026", daysLeft: 8, status: "Upcoming" },
+        { id: "PAY-202", supplier: "Global Steel Co.", invoiceNo: "INV-9210", amount: "$32,500.00", dueDate: "Oct 20, 2026", daysLeft: 3, status: "Due Soon" },
+        { id: "PAY-203", supplier: "OfficeWorld Supplies", invoiceNo: "INV-7721", amount: "$780.00", dueDate: "Oct 15, 2026", daysLeft: -2, status: "Overdue" },
+      ],
+      addSupplierPayment: (payment) => set((state) => ({ supplierPayments: [...state.supplierPayments, payment] })),
+      updateSupplierPaymentStatus: (id, status) => set((state) => ({
+        supplierPayments: state.supplierPayments.map(p => p.id === id ? { ...p, status } : p)
+      })),
+      deleteSupplierPayment: (id) => set((state) => ({ supplierPayments: state.supplierPayments.filter(p => p.id !== id) })),
 
     }),
     {
