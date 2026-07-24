@@ -1,3 +1,4 @@
+
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
@@ -48,6 +49,7 @@ export const useAssetsStore = create<AssetsState>()(
         { id: "AST-005", name: "Office Furniture Set", category: "Furniture", purchaseDate: "Feb 14, 2020", cost: "$12,000.00", currentValue: "$4,800.00", location: "Headquarters", condition: "Poor", status: "In Use" },
         { id: "AST-006", name: "Industrial Generator", category: "Machinery", purchaseDate: "Nov 11, 2019", cost: "$28,000.00", currentValue: "$5,600.00", location: "Main WH", condition: "Fair", status: "Under Maintenance" },
       ],
+      
       addAsset: (asset) => set((state) => ({ assets: [...state.assets, asset] })),
       updateAssetStatus: (id, status) => set((state) => ({
         assets: state.assets.map(a => a.id === id ? { ...a, status } : a)
