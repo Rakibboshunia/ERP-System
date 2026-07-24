@@ -201,84 +201,100 @@ export function AppSidebar() {
 
   // Make sure it doesn't break during SSR if user isn't loaded yet
   const filteredMenuItems = user ? menuItems.filter(item => hasPermission(item.roles)) : []
+  const activeModule = filteredMenuItems.find(item => 
+    pathname === item.url || (item.url !== "/" && pathname.startsWith(`${item.url}/`))
+  ) || filteredMenuItems[0]
 
   return (
-    <Sidebar variant="sidebar" className="border-r border-border/60 backdrop-blur-xl">
-      <SidebarHeader className="h-16 px-6 flex items-center justify-start border-b border-border/50">
-        <div className="flex items-center gap-3 font-bold text-lg">
-          <div className="bg-gradient-to-tr from-primary via-indigo-600 to-violet-500 text-primary-foreground p-2 rounded-xl shadow-md shadow-primary/20">
-            <Building2 className="w-5 h-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="leading-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Enterprise ERP</span>
-            <span className="text-[10px] text-muted-foreground font-normal tracking-wide uppercase">Workspace v2.0</span>
+    <Sidebar variant="sidebar" className="border-r border-border/60 overflow-hidden">
+      <div className="flex flex-row size-full">
+        {/* Primary Sidebar */}
+        <div className="w-[72px] bg-slate-950 flex flex-col items-center py-4 shrink-0 h-full z-10 relative">
+        <div className="mb-8">
+          <div className="w-10 h-10 bg-orange-500 text-white flex items-center justify-center rounded-xl font-bold text-xl shadow-lg shadow-orange-500/20">
+            E
           </div>
         </div>
-      </SidebarHeader>
-      <SidebarContent className="py-2">
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-2 px-6">
-            Core Modules
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="px-3 space-y-1">
-              {filteredMenuItems.map((item) => {
-                const isActive = pathname === item.url || pathname.startsWith(`${item.url}/`)
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      render={<Link href={item.url} />}
-                      isActive={isActive}
-                      className={`rounded-xl transition-all duration-200 py-5 font-medium ${
-                        isActive
-                          ? "bg-gradient-to-r from-primary to-indigo-600 text-white shadow-md shadow-primary/25 hover:from-primary/95 hover:to-indigo-600/95"
-                          : "hover:bg-muted/60 text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className={`w-4 h-4 ${isActive ? "text-white" : "opacity-70"}`} />
-                        <span className="text-xs">{item.title}</span>
-                      </div>
-                    </SidebarMenuButton>
-                    {item.subItems && isActive && (
-                      <SidebarMenuSub className="ml-5 border-l-2 border-primary/30 pl-2 my-1 space-y-0.5">
-                        {item.subItems.map((sub) => (
-                          <SidebarMenuSubItem key={sub.title}>
-                            <SidebarMenuSubButton
-                              isActive={pathname === sub.url}
-                              render={<Link href={sub.url} />}
-                              className={`text-xs rounded-lg py-1.5 px-3 transition-colors ${
-                                pathname === sub.url
-                                  ? "font-semibold text-primary bg-primary/10"
-                                  : "text-muted-foreground hover:text-foreground"
-                              }`}
-                            >
-                              <span>{sub.title}</span>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    )}
-                  </SidebarMenuItem>
-                )
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter className="border-t border-border/50 p-4 bg-muted/20">
+        
+        <div className="flex-1 w-full flex flex-col gap-2 px-3 overflow-y-auto no-scrollbar">
+          {filteredMenuItems.map(item => {
+            const isActive = activeModule?.title === item.title
+            return (
+              <Link 
+                key={item.title} 
+                href={item.url}
+                title={item.title}
+                className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all relative group ${
+                  isActive ? "bg-orange-500 text-white shadow-md shadow-orange-500/20" : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                }`}
+              >
+                {isActive && (
+                  <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1 h-6 bg-orange-500 rounded-r-full" />
+                )}
+                <item.icon className="w-5 h-5" />
+              </Link>
+            )
+          })}
+        </div>
+
         {user && (
-          <div className="flex items-center gap-3 px-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-violet-500 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+          <div className="mt-auto pt-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center font-bold text-sm shadow-sm border border-white/10 cursor-pointer">
               {user.name.substring(0, 2).toUpperCase()}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-semibold">{user.name}</span>
-              <span className="text-[10px] text-muted-foreground capitalize">{user.role.replace("_", " ")}</span>
             </div>
           </div>
         )}
-      </SidebarFooter>
+      </div>
+
+      {/* Secondary Sidebar */}
+      <div className="flex-1 flex flex-col bg-sidebar h-full overflow-hidden">
+        <SidebarHeader className="h-20 px-6 flex items-center justify-start border-b border-border/40">
+          <div className="flex flex-col pt-2">
+            <span className="text-[10px] text-muted-foreground font-semibold tracking-widest uppercase">Enterprise ERP</span>
+            <span className="font-bold text-lg leading-tight mt-0.5">{activeModule?.title || "Overview"}</span>
+          </div>
+        </SidebarHeader>
+        
+        <SidebarContent className="py-4">
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu className="px-3 space-y-1">
+                {activeModule?.subItems ? (
+                  activeModule.subItems.map((sub) => {
+                    const isSubActive = pathname === sub.url
+                    return (
+                      <SidebarMenuItem key={sub.title}>
+                        <SidebarMenuButton
+                          render={<Link href={sub.url} />}
+                          isActive={isSubActive}
+                          className={`rounded-lg transition-all duration-200 py-4 font-medium ${
+                            isSubActive
+                              ? "bg-muted text-primary"
+                              : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <span className="text-sm">{sub.title}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    )
+                  })
+                ) : (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      render={<Link href={activeModule?.url || "/"} />}
+                      isActive={true}
+                      className="rounded-lg transition-all duration-200 py-4 font-medium bg-muted text-primary"
+                    >
+                      <span className="text-sm">Overview</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </div>
+      </div>
     </Sidebar>
   )
 }

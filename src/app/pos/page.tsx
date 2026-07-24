@@ -68,6 +68,8 @@ export default function POSPage() {
 
   const removeItem = (id: string) => setCart(prev => prev.filter(i => i.id !== id))
 
+  const [receiptNo, setReceiptNo] = useState("")
+
   const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0)
   const discountAmt = discount
     ? discountType === "percent" ? subtotal * (parseFloat(discount) / 100) : parseFloat(discount)
@@ -75,10 +77,10 @@ export default function POSPage() {
   const taxable = Math.max(0, subtotal - discountAmt)
   const taxAmt = taxable * TAX_RATE
   const total = taxable + taxAmt
-  const receiptNo = `RCP-${Date.now().toString().slice(-6)}`
 
   const handlePrint = () => {
     if (cart.length === 0) return
+    setReceiptNo(`RCP-${Date.now().toString().slice(-6)}`)
     setReceiptVisible(true)
     setTimeout(() => window.print(), 300)
   }

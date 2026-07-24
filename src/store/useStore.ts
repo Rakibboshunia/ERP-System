@@ -1,6 +1,7 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import toast from 'react-hot-toast'
 
 export type Role = "superadmin" | "admin" | "hr" | "accountant" | "sales_manager" | "inventory_manager" | "employee"
 
@@ -187,26 +188,22 @@ export const useStore = create<AppState>()(
         { id: "PRD-1005", name: "4K Monitor", category: "Electronics", brand: "LG", warehouse: "East WH", stock: 8, minStock: 10, status: "Low Stock", price: "$450.00" },
         { id: "PRD-1006", name: "MacBook Pro M3", category: "Electronics", brand: "Apple", warehouse: "Main WH", stock: 32, minStock: 5, status: "In Stock", price: "$2,499.00" },
       ],
-      addProduct: (product) => set((state) => ({ products: [...state.products, product] })),
+      addProduct: (product) => set((state) => { toast.success(`Product "${product.name}" added!`); return { products: [...state.products, product] } }),
       updateProduct: (id, data) => set((state) => ({
         products: state.products.map((p) => (p.id === id ? { ...p, ...data } : p)),
       })),
-      deleteProduct: (id) => set((state) => ({
-        products: state.products.filter((p) => p.id !== id),
-      })),
+      deleteProduct: (id) => set((state) => { toast.error('Product deleted.', { icon: '🗑️' }); return { products: state.products.filter((p) => p.id !== id) } }),
 
       // --- CRM STATE ---
       customers: [
         { id: "CUST-001", name: "Alice Johnson", company: "Acme Corp", email: "alice@acme.com", phone: "+1 555-0100", status: "Active" },
         { id: "CUST-002", name: "Bob Smith", company: "Tech Flow", email: "bob@techflow.io", phone: "+1 555-0200", status: "Inactive" },
       ],
-      addCustomer: (customer) => set((state) => ({ customers: [...state.customers, customer] })),
+      addCustomer: (customer) => set((state) => { toast.success(`Customer "${customer.name}" added!`); return { customers: [...state.customers, customer] } }),
       updateCustomer: (id, data) => set((state) => ({
         customers: state.customers.map((c) => (c.id === id ? { ...c, ...data } : c)),
       })),
-      deleteCustomer: (id) => set((state) => ({
-        customers: state.customers.filter((c) => c.id !== id),
-      })),
+      deleteCustomer: (id) => set((state) => { toast.error('Customer deleted.', { icon: '🗑️' }); return { customers: state.customers.filter((c) => c.id !== id) } }),
 
       // --- COMPANY STATE ---
       branches: [
@@ -214,24 +211,24 @@ export const useStore = create<AppState>()(
         { id: "BR-02", name: "East Coast Hub", location: "New York", head: "Bob Johnson", status: "Active" },
         { id: "BR-03", name: "European Office", location: "London", head: "Claire Williams", status: "Inactive" },
       ],
-      addBranch: (branch) => set((state) => ({ branches: [...state.branches, branch] })),
-      deleteBranch: (id) => set((state) => ({ branches: state.branches.filter((b) => b.id !== id) })),
+      addBranch: (branch) => set((state) => { toast.success(`Branch "${branch.name}" added!`); return { branches: [...state.branches, branch] } }),
+      deleteBranch: (id) => set((state) => { toast.error('Branch deleted.', { icon: '🗑️' }); return { branches: state.branches.filter((b) => b.id !== id) } }),
 
       departments: [
         { id: "D-01", name: "Engineering", branch: "Headquarters", head: "David Lee", empCount: 45 },
         { id: "D-02", name: "Sales & Marketing", branch: "All Branches", head: "Eva Green", empCount: 32 },
         { id: "D-03", name: "Human Resources", branch: "Headquarters", head: "Frank Miller", empCount: 8 },
       ],
-      addDepartment: (dept) => set((state) => ({ departments: [...state.departments, dept] })),
-      deleteDepartment: (id) => set((state) => ({ departments: state.departments.filter((d) => d.id !== id) })),
+      addDepartment: (dept) => set((state) => { toast.success(`Department "${dept.name}" added!`); return { departments: [...state.departments, dept] } }),
+      deleteDepartment: (id) => set((state) => { toast.error('Department deleted.', { icon: '🗑️' }); return { departments: state.departments.filter((d) => d.id !== id) } }),
 
       designations: [
         { id: "DS-01", title: "Software Engineer", department: "Engineering", level: "Mid" },
         { id: "DS-02", title: "Sales Manager", department: "Sales & Marketing", level: "Senior" },
         { id: "DS-03", title: "HR Generalist", department: "Human Resources", level: "Junior" },
       ],
-      addDesignation: (desig) => set((state) => ({ designations: [...state.designations, desig] })),
-      deleteDesignation: (id) => set((state) => ({ designations: state.designations.filter((d) => d.id !== id) })),
+      addDesignation: (desig) => set((state) => { toast.success(`Designation "${desig.title}" added!`); return { designations: [...state.designations, desig] } }),
+      deleteDesignation: (id) => set((state) => { toast.error('Designation deleted.', { icon: '🗑️' }); return { designations: state.designations.filter((d) => d.id !== id) } }),
 
       // --- HR STATE ---
       employees: [
@@ -241,17 +238,19 @@ export const useStore = create<AppState>()(
         { id: "EMP-004", name: "Diana Prince", email: "diana@acme.corp", role: "Sales Executive", department: "Sales", status: "Active" },
         { id: "EMP-005", name: "Evan Wright", email: "evan@acme.corp", role: "Accountant", department: "Finance", status: "Terminated" },
       ],
-      addEmployee: (emp) => set((state) => ({ employees: [...state.employees, emp] })),
-      deleteEmployee: (id) => set((state) => ({ employees: state.employees.filter((e) => e.id !== id) })),
+      addEmployee: (emp) => set((state) => { toast.success(`Employee "${emp.name}" added!`); return { employees: [...state.employees, emp] } }),
+      deleteEmployee: (id) => set((state) => { toast.error('Employee removed.', { icon: '🗑️' }); return { employees: state.employees.filter((e) => e.id !== id) } }),
 
       leaveRequests: [
         { id: "LR-101", emp: "Charlie Davis", type: "Annual Leave", dates: "Oct 15 - Oct 20", status: "Approved" },
         { id: "LR-102", emp: "Diana Prince", type: "Sick Leave", dates: "Oct 18 - Oct 19", status: "Pending" },
       ],
-      addLeaveRequest: (lr) => set((state) => ({ leaveRequests: [...state.leaveRequests, lr] })),
-      updateLeaveRequestStatus: (id, status) => set((state) => ({
-        leaveRequests: state.leaveRequests.map(lr => lr.id === id ? { ...lr, status } : lr)
-      })),
+      addLeaveRequest: (lr) => set((state) => { toast.success('Leave request submitted!'); return { leaveRequests: [...state.leaveRequests, lr] } }),
+      updateLeaveRequestStatus: (id, status) => set((state) => {
+        const label = status === 'Approved' ? '✅ Approved' : status === 'Rejected' ? '❌ Rejected' : 'Updated'
+        toast(label, { icon: status === 'Approved' ? '✅' : status === 'Rejected' ? '❌' : 'ℹ️' })
+        return { leaveRequests: state.leaveRequests.map(lr => lr.id === id ? { ...lr, status } : lr) }
+      }),
 
       // --- SALES MANAGEMENT STATE ---
       returns: [
@@ -259,11 +258,12 @@ export const useStore = create<AppState>()(
         { id: "RMA-6002", invoiceRef: "INV-4201", customer: "Acme Corp", items: 1, reason: "Wrong item shipped", amount: "$2,480.00", date: "Oct 20, 2026", status: "Pending" },
         { id: "RMA-6003", invoiceRef: "INV-4203", customer: "Oscorp", items: 3, reason: "Customer changed mind", amount: "$1,620.00", date: "Oct 15, 2026", status: "Rejected" },
       ],
-      addReturn: (ret) => set((state) => ({ returns: [...state.returns, ret] })),
-      updateReturnStatus: (id, status) => set((state) => ({
-        returns: state.returns.map(r => r.id === id ? { ...r, status } : r)
-      })),
-      deleteReturn: (id) => set((state) => ({ returns: state.returns.filter(r => r.id !== id) })),
+      addReturn: (ret) => set((state) => { toast.success(`Return "${ret.id}" created!`); return { returns: [...state.returns, ret] } }),
+      updateReturnStatus: (id, status) => set((state) => {
+        toast(status === 'Approved' ? 'Return approved!' : status === 'Rejected' ? 'Return rejected.' : 'Status updated.')
+        return { returns: state.returns.map(r => r.id === id ? { ...r, status } : r) }
+      }),
+      deleteReturn: (id) => set((state) => { toast.error('Return deleted.', { icon: '🗑️' }); return { returns: state.returns.filter(r => r.id !== id) } }),
 
       // --- SUPPLIER MANAGEMENT STATE ---
       supplierRatings: [
@@ -272,22 +272,23 @@ export const useStore = create<AppState>()(
         { id: "SUP-003", name: "FastShip Logistics", onTime: 72, quality: 3.5, responseTime: "< 1 day", returns: 8.4, overall: 3.2 },
         { id: "SUP-004", name: "OfficeWorld Supplies", onTime: 99, quality: 4.9, responseTime: "< 1 hour", returns: 0.5, overall: 4.9 },
       ],
-      addSupplierRating: (rating) => set((state) => ({ supplierRatings: [...state.supplierRatings, rating] })),
+      addSupplierRating: (rating) => set((state) => { toast.success(`Supplier "${rating.name}" rated!`); return { supplierRatings: [...state.supplierRatings, rating] } }),
       updateSupplierRating: (id, data) => set((state) => ({
         supplierRatings: state.supplierRatings.map(r => r.id === id ? { ...r, ...data } : r)
       })),
-      deleteSupplierRating: (id) => set((state) => ({ supplierRatings: state.supplierRatings.filter(r => r.id !== id) })),
+      deleteSupplierRating: (id) => set((state) => { toast.error('Supplier rating deleted.', { icon: '🗑️' }); return { supplierRatings: state.supplierRatings.filter(r => r.id !== id) } }),
 
       supplierPayments: [
         { id: "PAY-201", supplier: "TechParts Inc.", invoiceNo: "INV-8844", amount: "$14,200.00", dueDate: "Oct 25, 2026", daysLeft: 8, status: "Upcoming" },
         { id: "PAY-202", supplier: "Global Steel Co.", invoiceNo: "INV-9210", amount: "$32,500.00", dueDate: "Oct 20, 2026", daysLeft: 3, status: "Due Soon" },
         { id: "PAY-203", supplier: "OfficeWorld Supplies", invoiceNo: "INV-7721", amount: "$780.00", dueDate: "Oct 15, 2026", daysLeft: -2, status: "Overdue" },
       ],
-      addSupplierPayment: (payment) => set((state) => ({ supplierPayments: [...state.supplierPayments, payment] })),
-      updateSupplierPaymentStatus: (id, status) => set((state) => ({
-        supplierPayments: state.supplierPayments.map(p => p.id === id ? { ...p, status } : p)
-      })),
-      deleteSupplierPayment: (id) => set((state) => ({ supplierPayments: state.supplierPayments.filter(p => p.id !== id) })),
+      addSupplierPayment: (payment) => set((state) => { toast.success(`Payment for "${payment.supplier}" added!`); return { supplierPayments: [...state.supplierPayments, payment] } }),
+      updateSupplierPaymentStatus: (id, status) => set((state) => {
+        toast.success(`Payment status updated to "${status}".`)
+        return { supplierPayments: state.supplierPayments.map(p => p.id === id ? { ...p, status } : p) }
+      }),
+      deleteSupplierPayment: (id) => set((state) => { toast.error('Payment record deleted.', { icon: '🗑️' }); return { supplierPayments: state.supplierPayments.filter(p => p.id !== id) } }),
 
     }),
     {

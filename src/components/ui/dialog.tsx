@@ -25,7 +25,7 @@ function DialogTrigger({
     : render
 
   const resolvedChildren = asChild && React.isValidElement(children)
-    ? (children as React.ReactElement).props.children
+    ? (children as React.ReactElement<any>).props.children
     : children
 
   return (

@@ -29,7 +29,7 @@ export default function InventoryReportPage() {
                   <Pie data={inventoryValuation} cx="50%" cy="50%" innerRadius={80} outerRadius={110} paddingAngle={2} dataKey="value">
                     {inventoryValuation.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                   </Pie>
-                  <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} contentStyle={{ borderRadius: "8px" }} />
+                  <Tooltip formatter={(value: any) => `$${Number(value).toLocaleString()}`} contentStyle={{ borderRadius: "8px" }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>

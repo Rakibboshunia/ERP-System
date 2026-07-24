@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import toast from 'react-hot-toast'
 
 export interface Project {
   id: string
@@ -72,11 +73,11 @@ export const useProjectStore = create<ProjectState>()(
         { id: "PRJ-003", name: "Mobile App v2.0", client: "Stark Industries", manager: "Diana Prince", team: 6, deadline: "Jan 30, 2027", progress: 30, status: "On Hold" },
         { id: "PRJ-004", name: "Data Migration", client: "Wayne Ent.", manager: "Evan Wright", team: 3, deadline: "Oct 30, 2026", progress: 95, status: "Completed" },
       ],
-      addProject: (project) => set((state) => ({ projects: [...state.projects, project] })),
+      addProject: (project) => set((state) => { toast.success(`Project "${project.name}" created!`); return { projects: [...state.projects, project] } }),
       updateProject: (id, data) => set((state) => ({
         projects: state.projects.map(p => p.id === id ? { ...p, ...data } : p)
       })),
-      deleteProject: (id) => set((state) => ({ projects: state.projects.filter(p => p.id !== id) })),
+      deleteProject: (id) => set((state) => { toast.error('Project deleted.', { icon: '🗑️' }); return { projects: state.projects.filter(p => p.id !== id) } }),
 
       tasks: [
         { id: "TSK-101", project: "ERP System Rollout", title: "Design database schema", assignee: "Alice Johnson", priority: "High", due: "Oct 25, 2026", status: "Done" },
@@ -86,11 +87,11 @@ export const useProjectStore = create<ProjectState>()(
         { id: "TSK-105", project: "Mobile App v2.0", title: "Set up CI/CD pipeline", assignee: "Evan Wright", priority: "Low", due: "Nov 10, 2026", status: "Todo" },
         { id: "TSK-106", project: "ERP System Rollout", title: "Write unit tests", assignee: "Alice Johnson", priority: "Medium", due: "Nov 01, 2026", status: "Todo" },
       ],
-      addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+      addTask: (task) => set((state) => { toast.success(`Task "${task.title}" added!`); return { tasks: [...state.tasks, task] } }),
       updateTaskStatus: (id, status) => set((state) => ({
         tasks: state.tasks.map(t => t.id === id ? { ...t, status } : t)
       })),
-      deleteTask: (id) => set((state) => ({ tasks: state.tasks.filter(t => t.id !== id) })),
+      deleteTask: (id) => set((state) => { toast.error('Task deleted.', { icon: '🗑️' }); return { tasks: state.tasks.filter(t => t.id !== id) } }),
 
       teamMembers: [
         { id: "M1", name: "Alice Johnson", role: "Project Lead", email: "alice@erp.com", projects: 2, tasksOpen: 4, status: "Active" },
@@ -99,11 +100,11 @@ export const useProjectStore = create<ProjectState>()(
         { id: "M4", name: "Diana Prince", role: "Frontend Dev", email: "diana@erp.com", projects: 2, tasksOpen: 3, status: "Active" },
         { id: "M5", name: "Evan Wright", role: "DevOps Engineer", email: "evan@erp.com", projects: 2, tasksOpen: 1, status: "On Leave" },
       ],
-      addTeamMember: (member) => set((state) => ({ teamMembers: [...state.teamMembers, member] })),
+      addTeamMember: (member) => set((state) => { toast.success(`"${member.name}" added to team!`); return { teamMembers: [...state.teamMembers, member] } }),
       updateTeamMember: (id, data) => set((state) => ({
         teamMembers: state.teamMembers.map(m => m.id === id ? { ...m, ...data } : m)
       })),
-      deleteTeamMember: (id) => set((state) => ({ teamMembers: state.teamMembers.filter(m => m.id !== id) })),
+      deleteTeamMember: (id) => set((state) => { toast.error('Team member removed.', { icon: '🗑️' }); return { teamMembers: state.teamMembers.filter(m => m.id !== id) } }),
 
       timeLogs: [
         { id: "TL-01", member: "Alice Johnson", project: "ERP System Rollout", task: "Implement RBAC module", date: "Oct 17, 2026", duration: "3h 45m", billable: true },
@@ -111,8 +112,8 @@ export const useProjectStore = create<ProjectState>()(
         { id: "TL-03", member: "Diana Prince", project: "Website Redesign", task: "Develop landing page", date: "Oct 16, 2026", duration: "5h 00m", billable: true },
         { id: "TL-04", member: "Charlie Davis", project: "Website Redesign", task: "Create wireframes", date: "Oct 15, 2026", duration: "4h 15m", billable: false },
       ],
-      addTimeLog: (log) => set((state) => ({ timeLogs: [...state.timeLogs, log] })),
-      deleteTimeLog: (id) => set((state) => ({ timeLogs: state.timeLogs.filter(l => l.id !== id) })),
+      addTimeLog: (log) => set((state) => { toast.success('Time log added!'); return { timeLogs: [...state.timeLogs, log] } }),
+      deleteTimeLog: (id) => set((state) => { toast.error('Time log deleted.', { icon: '🗑️' }); return { timeLogs: state.timeLogs.filter(l => l.id !== id) } }),
     }),
     {
       name: 'erp-project-storage',

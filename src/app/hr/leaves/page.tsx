@@ -101,7 +101,7 @@ export default function LeavesPage() {
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="type" className="text-right">Leave Type</Label>
-                    <Select value={formData.type} onValueChange={v => setFormData({ ...formData, type: v })}>
+                    <Select value={formData.type} onValueChange={v => setFormData({ ...formData, type: v || "" })}>
                       <SelectTrigger className="col-span-3"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Annual Leave">Annual Leave</SelectItem>

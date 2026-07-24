@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import toast from 'react-hot-toast'
 
 export interface Supplier {
   id: string
@@ -41,11 +42,11 @@ export const useSupplierStore = create<SupplierState>()(
         { id: "SUP-003", name: "FastShip Logistics", contact: "Omar Hassan", email: "o.hassan@fastship.com", phone: "+1 (555) 443-6621", category: "Logistics", status: "Inactive" },
         { id: "SUP-004", name: "OfficeWorld Supplies", contact: "Linda Park", email: "l.park@officeworld.com", phone: "+1 (555) 339-0011", category: "Office Supplies", status: "Active" },
       ],
-      addSupplier: (supplier) => set((state) => ({ suppliersList: [...state.suppliersList, supplier] })),
+      addSupplier: (supplier) => set((state) => { toast.success(`Supplier "${supplier.name}" added!`); return { suppliersList: [...state.suppliersList, supplier] } }),
       updateSupplierStatus: (id, status) => set((state) => ({
         suppliersList: state.suppliersList.map(s => s.id === id ? { ...s, status } : s)
       })),
-      deleteSupplier: (id) => set((state) => ({ suppliersList: state.suppliersList.filter(s => s.id !== id) })),
+      deleteSupplier: (id) => set((state) => { toast.error('Supplier deleted.', { icon: '🗑️' }); return { suppliersList: state.suppliersList.filter(s => s.id !== id) } }),
 
       purchaseHistory: [
         { id: "PO-4021", supplier: "TechParts Inc.", date: "Oct 10, 2026", items: 48, total: "$14,200.00", status: "Received" },
@@ -53,11 +54,12 @@ export const useSupplierStore = create<SupplierState>()(
         { id: "PO-4023", supplier: "OfficeWorld Supplies", date: "Oct 14, 2026", items: 5, total: "$780.00", status: "Received" },
         { id: "PO-4024", supplier: "FastShip Logistics", date: "Oct 15, 2026", items: 1, total: "$3,100.00", status: "Cancelled" },
       ],
-      addPurchaseHistory: (history) => set((state) => ({ purchaseHistory: [...state.purchaseHistory, history] })),
-      updatePurchaseStatus: (id, status) => set((state) => ({
-        purchaseHistory: state.purchaseHistory.map(p => p.id === id ? { ...p, status } : p)
-      })),
-      deletePurchaseHistory: (id) => set((state) => ({ purchaseHistory: state.purchaseHistory.filter(p => p.id !== id) })),
+      addPurchaseHistory: (history) => set((state) => { toast.success(`Purchase order "${history.id}" added!`); return { purchaseHistory: [...state.purchaseHistory, history] } }),
+      updatePurchaseStatus: (id, status) => set((state) => {
+        toast.success(`Order status updated to "${status}".`)
+        return { purchaseHistory: state.purchaseHistory.map(p => p.id === id ? { ...p, status } : p) }
+      }),
+      deletePurchaseHistory: (id) => set((state) => { toast.error('Purchase record deleted.', { icon: '🗑️' }); return { purchaseHistory: state.purchaseHistory.filter(p => p.id !== id) } }),
     }),
     {
       name: 'erp-supplier-storage',

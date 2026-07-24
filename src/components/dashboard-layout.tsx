@@ -18,25 +18,28 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <AppSidebar />
       <main className="w-full min-h-screen flex flex-col overflow-x-hidden bg-gradient-to-br from-background via-background to-muted/20">
-        <header className="h-16 flex items-center justify-between px-6 border-b border-border/50 glass-nav sticky top-0 z-40 shadow-xs">
+        <header className="h-16 flex items-center justify-between px-6 border-b border-white/10 header-glass sticky top-0 z-40">
           <div className="flex items-center gap-3">
-            <SidebarTrigger />
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border/60 bg-muted/30 text-xs text-muted-foreground w-64 cursor-pointer hover:bg-muted/50 transition-colors">
-              <Search className="w-3.5 h-3.5 text-muted-foreground" />
+            <SidebarTrigger className="text-muted-foreground hover:text-primary transition-colors" />
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border/60 bg-white/5 dark:bg-black/20 text-xs text-muted-foreground w-64 cursor-pointer hover:bg-white/10 dark:hover:bg-black/30 transition-all shadow-sm">
+              <Search className="w-4 h-4 text-primary/70" />
               <span>Search modules or data...</span>
-              <kbd className="ml-auto pointer-events-none inline-flex h-4 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+              <kbd className="ml-auto pointer-events-none inline-flex h-4 select-none items-center gap-1 rounded bg-muted/80 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
                 ⌘K
               </kbd>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full relative text-muted-foreground hover:text-foreground">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full relative text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+              <Sparkles className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full relative text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
               <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary" />
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(234,88,12,0.8)] animate-pulse" />
             </Button>
 
-            <div className="h-4 w-[1px] bg-border/60" />
+            <div className="h-5 w-[1px] bg-border/60 mx-1" />
             
             <RoleSwitcher />
           </div>
