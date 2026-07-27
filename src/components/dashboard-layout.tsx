@@ -18,7 +18,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <AppSidebar />
       <main className="w-full min-h-screen flex flex-col overflow-x-hidden bg-gradient-to-br from-background via-background to-muted/20">
-        <header className="h-16 flex items-center justify-between px-6 border-b border-white/10 header-glass sticky top-0 z-40">
+        <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b border-white/10 header-glass sticky top-0 z-40">
           <div className="flex items-center gap-3">
             <SidebarTrigger className="text-muted-foreground hover:text-primary transition-colors" />
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border/60 bg-white/5 dark:bg-black/20 text-xs text-muted-foreground w-64 cursor-pointer hover:bg-white/10 dark:hover:bg-black/30 transition-all shadow-sm">
@@ -31,7 +31,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full relative text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+            <Button variant="ghost" size="icon" className="hidden sm:flex h-10 w-10 rounded-full relative text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
               <Sparkles className="w-4 h-4" />
             </Button>
             <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full relative text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
@@ -44,7 +44,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <RoleSwitcher />
           </div>
         </header>
-        <div className="p-6 md:p-8 flex-1 max-w-7xl mx-auto w-full space-y-6">
+        <div className="p-4 sm:p-6 md:p-8 flex-1 max-w-7xl mx-auto w-full space-y-4 sm:space-y-6">
           {children}
         </div>
       </main>

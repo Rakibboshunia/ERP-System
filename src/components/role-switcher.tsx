@@ -33,9 +33,9 @@ export function RoleSwitcher() {
           <span className="text-[10px] text-muted-foreground capitalize leading-tight">{user.role.replace("_", " ")}</span>
         </div>
       </div>
-      <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10" onClick={handleSignOut}>
-        <LogOut className="w-3.5 h-3.5 mr-1.5" />
-        Sign Out
+      <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 px-2 sm:px-3" onClick={handleSignOut}>
+        <LogOut className="w-3.5 h-3.5 sm:mr-1.5" />
+        <span className="hidden sm:inline">Sign Out</span>
       </Button>
     </div>
   )
