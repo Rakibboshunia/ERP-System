@@ -28,7 +28,7 @@ type EditingRow = {
 
 export default function AttendancePage() {
   const { user, hasPermission } = useAuth()
-  const isAdmin = hasPermission(["superadmin", "admin"])
+  const isAdmin = hasPermission(["superadmin", "admin", "hr"])
 
   const [records, setRecords] = React.useState<AttendanceRecord[]>([
     { id: 1, emp: "Alice Johnson", date: "Today", checkIn: "08:55 AM", checkOut: "05:10 PM", status: "Present", hrs: "8h 15m" },
