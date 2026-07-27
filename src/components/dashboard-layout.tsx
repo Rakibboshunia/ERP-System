@@ -17,7 +17,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full min-h-screen flex flex-col overflow-x-hidden bg-gradient-to-br from-background via-background to-muted/20">
+      <main className="w-full min-h-screen flex flex-col overflow-x-hidden bg-gradient-to-br from-blue-50/80 via-background to-purple-50/80 dark:from-blue-950/30 dark:via-background dark:to-purple-950/30 relative">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZUZpbHRlciI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bU9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgibm9pc2VGaWx0ZXIpIi8+PC9zdmc+')] opacity-[0.015] dark:opacity-[0.03] pointer-events-none mix-blend-overlay"></div>
         <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b border-white/10 header-glass sticky top-0 z-40">
           <div className="flex items-center gap-3">
             <SidebarTrigger className="text-muted-foreground hover:text-primary transition-colors" />
