@@ -206,7 +206,7 @@ export function AppSidebar() {
   ) || filteredMenuItems[0]
 
   return (
-    <Sidebar variant="sidebar" className="border-r border-border/60 overflow-hidden">
+    <Sidebar variant="sidebar" collapsible="icon" className="border-r border-border/60 overflow-hidden group/sidebar">
       <div className="flex flex-row size-full">
         {/* Primary Sidebar */}
         <div className="w-[72px] bg-slate-950 flex flex-col items-center py-4 shrink-0 h-full z-10 relative">
@@ -247,7 +247,7 @@ export function AppSidebar() {
       </div>
 
       {/* Secondary Sidebar */}
-      <div className="flex-1 flex flex-col bg-sidebar h-full overflow-hidden">
+      <div className="flex-1 flex flex-col bg-sidebar h-full overflow-hidden min-w-[200px] group-data-[state=collapsed]/sidebar:opacity-0 transition-opacity duration-200">
         <SidebarHeader className="h-20 px-6 flex items-center justify-start border-b border-border/40">
           <div className="flex flex-col pt-2">
             <span className="text-[10px] text-muted-foreground font-semibold tracking-widest uppercase">Enterprise ERP</span>
