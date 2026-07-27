@@ -1,17 +1,11 @@
 
 "use client"
 
-import React, { createContext, useContext, useEffect } from "react"
-import { useSession, SessionProvider } from "next-auth/react"
+import React, { createContext, useContext, useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
+import { useStore, Role, User } from "@/store/useStore"
 
-export type Role = "superadmin" | "admin" | "hr" | "accountant" | "sales_manager" | "inventory_manager" | "employee"
-
-interface User {
-  name: string
-  role: Role
-  email?: string
-}
+export type { Role }
 
 interface AuthContextType {
   user: User | null
@@ -22,17 +16,16 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <SessionProvider>
-      <AuthContextInner>{children}</AuthContextInner>
-    </SessionProvider>
-  )
-}
-
-function AuthContextInner({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession()
+  const user = useStore(state => state.user)
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const status = !mounted ? "loading" : user ? "authenticated" : "unauthenticated"
 
   useEffect(() => {
     if (status === "unauthenticated" && pathname !== "/login") {
@@ -40,16 +33,15 @@ function AuthContextInner({ children }: { children: React.ReactNode }) {
     }
   }, [status, pathname, router])
 
-  const user = session?.user ? {
-    name: session.user.name || "User",
-    email: session.user.email || "",
-    role: (session.user as any).role as Role || "employee"
-  } : null
-
   const hasPermission = (roles: Role[]) => {
     if (!user) return false
     if (user.role === "superadmin" || user.role === "admin") return true
     return roles.includes(user.role)
+  }
+
+  // Prevent hydration mismatch on initial render by not rendering content until mounted
+  if (!mounted) {
+    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
   }
 
   return (

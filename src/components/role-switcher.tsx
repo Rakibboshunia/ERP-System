@@ -1,13 +1,21 @@
 "use client"
 
 import { useAuth } from "@/contexts/auth-context"
-import { signOut } from "next-auth/react"
+import { useStore } from "@/store/useStore"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LogOut, User as UserIcon } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
 export function RoleSwitcher() {
   const { user, status } = useAuth()
+  const setUser = useStore(state => state.setUser)
+  const router = useRouter()
+
+  const handleSignOut = () => {
+    setUser(null)
+    router.push("/login")
+  }
 
   if (status !== "authenticated" || !user) return null
 
@@ -25,7 +33,7 @@ export function RoleSwitcher() {
           <span className="text-[10px] text-muted-foreground capitalize leading-tight">{user.role.replace("_", " ")}</span>
         </div>
       </div>
-      <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10" onClick={() => signOut({ callbackUrl: "/login" })}>
+      <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10" onClick={handleSignOut}>
         <LogOut className="w-3.5 h-3.5 mr-1.5" />
         Sign Out
       </Button>

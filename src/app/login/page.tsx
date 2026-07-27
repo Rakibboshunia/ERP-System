@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { signIn } from "next-auth/react"
+import { useStore, Role } from "@/store/useStore"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,16 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Building2, Eye, EyeOff, ShieldCheck } from "lucide-react"
+
+const users: Record<string, { id: string, name: string, email: string, role: Role }> = {
+  "superadmin@erp.com": { id: "1", name: "Super Admin", email: "superadmin@erp.com", role: "superadmin" },
+  "admin@erp.com": { id: "2", name: "Admin", email: "admin@erp.com", role: "admin" },
+  "hr@erp.com": { id: "3", name: "HR Manager", email: "hr@erp.com", role: "hr" },
+  "accountant@erp.com": { id: "4", name: "Accountant", email: "accountant@erp.com", role: "accountant" },
+  "sales@erp.com": { id: "5", name: "Sales Manager", email: "sales@erp.com", role: "sales_manager" },
+  "inventory@erp.com": { id: "6", name: "Inventory Manager", email: "inventory@erp.com", role: "inventory_manager" },
+  "employee@erp.com": { id: "7", name: "Regular Employee", email: "employee@erp.com", role: "employee" },
+}
 
 const demoRoles = [
   { role: "Super Admin", email: "superadmin@erp.com", color: "bg-purple-500/10 text-purple-600 border-purple-200" },
@@ -22,6 +32,7 @@ const demoRoles = [
 
 export default function LoginPage() {
   const router = useRouter()
+  const setUser = useStore((state) => state.setUser)
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("superadmin@erp.com")
   const [selectedRole, setSelectedRole] = useState("Super Admin")
@@ -30,13 +41,14 @@ export default function LoginPage() {
   const handleLogin = async (e?: React.FormEvent) => {
     e?.preventDefault()
     setIsLoading(true)
-    const result = await signIn("credentials", {
-      email,
-      password: "password123",
-      redirect: false
-    })
     
-    if (result?.ok) {
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 800))
+    
+    const user = users[email]
+    
+    if (user) {
+      setUser(user)
       router.push("/")
       router.refresh()
     } else {
