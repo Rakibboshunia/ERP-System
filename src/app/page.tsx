@@ -6,6 +6,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/contexts/auth-context"
+import Link from "next/link"
 
 const revenueData = [
   { name: "Jan", total: Math.floor(Math.random() * 5000) + 2000 },
@@ -63,70 +64,78 @@ export default function DashboardPage() {
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {canViewFinancials && (
-          <Card className="border-border/50 bg-gradient-to-br from-card to-card/50 shadow-sm transition-all hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              <div className="p-2 bg-primary/10 rounded-full">
-                <DollarSign className="w-4 h-4 text-primary" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-muted-foreground flex items-center mt-1">
-                <span className="text-emerald-500 flex items-center font-medium mr-1"><ArrowUpRight className="w-3 h-3 mr-0.5" />+20.1%</span> from last month
-              </p>
-            </CardContent>
-          </Card>
+          <Link href="/accounting/revenue" className="block focus:outline-none">
+            <Card className="border-border/50 bg-gradient-to-br from-card to-card/50 shadow-sm transition-all hover:shadow-md hover:scale-[1.02] cursor-pointer h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                <div className="p-2 bg-primary/10 rounded-full">
+                  <DollarSign className="w-4 h-4 text-primary" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">$45,231.89</div>
+                <p className="text-xs text-muted-foreground flex items-center mt-1">
+                  <span className="text-emerald-500 flex items-center font-medium mr-1"><ArrowUpRight className="w-3 h-3 mr-0.5" />+20.1%</span> from last month
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
         )}
         
         {canViewFinancials && (
-          <Card className="border-border/50 bg-gradient-to-br from-card to-card/50 shadow-sm transition-all hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Sales</CardTitle>
-              <div className="p-2 bg-primary/10 rounded-full">
-                <CreditCard className="w-4 h-4 text-primary" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+12,234</div>
-              <p className="text-xs text-muted-foreground flex items-center mt-1">
-                <span className="text-emerald-500 flex items-center font-medium mr-1"><ArrowUpRight className="w-3 h-3 mr-0.5" />+19%</span> from last month
-              </p>
-            </CardContent>
-          </Card>
+          <Link href="/sales-management" className="block focus:outline-none">
+            <Card className="border-border/50 bg-gradient-to-br from-card to-card/50 shadow-sm transition-all hover:shadow-md hover:scale-[1.02] cursor-pointer h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                <div className="p-2 bg-primary/10 rounded-full">
+                  <CreditCard className="w-4 h-4 text-primary" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">$12,234.00</div>
+                <p className="text-xs text-muted-foreground flex items-center mt-1">
+                  <span className="text-emerald-500 flex items-center font-medium mr-1"><ArrowUpRight className="w-3 h-3 mr-0.5" />+19%</span> from last month
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
         )}
 
         {canViewFinancials && (
-          <Card className="border-border/50 bg-gradient-to-br from-card to-card/50 shadow-sm transition-all hover:shadow-md">
+          <Link href="/purchases" className="block focus:outline-none">
+            <Card className="border-border/50 bg-gradient-to-br from-card to-card/50 shadow-sm transition-all hover:shadow-md hover:scale-[1.02] cursor-pointer h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                <CardTitle className="text-sm font-medium">Purchases</CardTitle>
+                <div className="p-2 bg-primary/10 rounded-full">
+                  <ShoppingCart className="w-4 h-4 text-primary" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">$24,110.00</div>
+                <p className="text-xs text-muted-foreground flex items-center mt-1">
+                  <span className="text-rose-500 flex items-center font-medium mr-1"><ArrowDownRight className="w-3 h-3 mr-0.5" />-4.5%</span> from last month
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
+
+        <Link href="/crm/customers" className="block focus:outline-none">
+          <Card className="border-border/50 bg-gradient-to-br from-card to-card/50 shadow-sm transition-all hover:shadow-md hover:scale-[1.02] cursor-pointer h-full">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Purchases</CardTitle>
+              <CardTitle className="text-sm font-medium">Active Customers</CardTitle>
               <div className="p-2 bg-primary/10 rounded-full">
-                <ShoppingCart className="w-4 h-4 text-primary" />
+                <Users className="w-4 h-4 text-primary" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$24,110.00</div>
+              <div className="text-2xl font-bold">2,350</div>
               <p className="text-xs text-muted-foreground flex items-center mt-1">
-                <span className="text-rose-500 flex items-center font-medium mr-1"><ArrowDownRight className="w-3 h-3 mr-0.5" />-4.5%</span> from last month
+                <span className="text-emerald-500 flex items-center font-medium mr-1"><ArrowUpRight className="w-3 h-3 mr-0.5" />+12%</span> from last month
               </p>
             </CardContent>
           </Card>
-        )}
-
-        <Card className="border-border/50 bg-gradient-to-br from-card to-card/50 shadow-sm transition-all hover:shadow-md">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Active Customers</CardTitle>
-            <div className="p-2 bg-primary/10 rounded-full">
-              <Users className="w-4 h-4 text-primary" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
-            <p className="text-xs text-muted-foreground flex items-center mt-1">
-              <span className="text-emerald-500 flex items-center font-medium mr-1"><ArrowUpRight className="w-3 h-3 mr-0.5" />+12%</span> from last month
-            </p>
-          </CardContent>
-        </Card>
+        </Link>
       </div>
 
       {/* Row 2: Revenue Analytics & Today's Orders */}
@@ -140,26 +149,26 @@ export default function DashboardPage() {
             <CardContent className="pl-2">
               <ResponsiveContainer width="100%" height={350}>
                 <BarChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground) / 0.2)" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                   <XAxis 
                     dataKey="name" 
-                    stroke="hsl(var(--muted-foreground))" 
+                    stroke="var(--muted-foreground)" 
                     fontSize={12} 
                     tickLine={false} 
                     axisLine={false} 
                   />
                   <YAxis 
-                    stroke="hsl(var(--muted-foreground))" 
+                    stroke="var(--muted-foreground)" 
                     fontSize={12} 
                     tickLine={false} 
                     axisLine={false} 
                     tickFormatter={(value) => `$${value}`} 
                   />
                   <Tooltip 
-                    cursor={{ fill: 'hsl(var(--muted) / 0.5)' }} 
-                    contentStyle={{ borderRadius: '8px', border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--background))' }}
+                    cursor={{ fill: 'var(--muted)' }} 
+                    contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', backgroundColor: 'var(--background)', color: 'var(--foreground)' }}
                   />
-                  <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="total" name="Revenue" fill="var(--primary)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -190,10 +199,11 @@ export default function DashboardPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={
-                        order.status === "Completed" ? "default" : 
-                        order.status === "Processing" ? "secondary" : 
-                        order.status === "Failed" ? "destructive" : "outline"
+                      <Badge variant="outline" className={
+                        order.status === "Completed" ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20" : 
+                        order.status === "Processing" ? "bg-blue-500/10 text-blue-500 border-blue-500/20 hover:bg-blue-500/20" : 
+                        order.status === "Failed" ? "bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20" : 
+                        "bg-secondary text-secondary-foreground"
                       }>
                         {order.status}
                       </Badge>
@@ -220,21 +230,21 @@ export default function DashboardPage() {
                 <AreaChart data={salesData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="colorPurchases" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.3}/>
                       <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground) / 0.2)" />
-                  <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--background))' }} />
+                  <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                  <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', backgroundColor: 'var(--background)', color: 'var(--foreground)' }} />
                   <Legend verticalAlign="top" height={36}/>
-                  <Area type="monotone" dataKey="sales" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSales)" />
-                  <Area type="monotone" dataKey="purchases" stroke="#f43f5e" fillOpacity={1} fill="url(#colorPurchases)" />
+                  <Area type="monotone" dataKey="sales" name="Sales" stroke="var(--primary)" fillOpacity={1} fill="url(#colorSales)" />
+                  <Area type="monotone" dataKey="purchases" name="Purchases" stroke="#f43f5e" fillOpacity={1} fill="url(#colorPurchases)" />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
@@ -307,10 +317,11 @@ export default function DashboardPage() {
                     <TableCell className="font-medium">{task.title}</TableCell>
                     <TableCell className="text-muted-foreground">{task.assignee}</TableCell>
                     <TableCell className="text-right">
-                      <Badge variant={
-                        task.priority === "High" ? "destructive" : 
-                        task.priority === "Medium" ? "default" : "secondary"
-                      } className={task.priority === "Medium" ? "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20" : ""}>
+                      <Badge variant="outline" className={
+                        task.priority === "High" ? "bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20" : 
+                        task.priority === "Medium" ? "bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20" : 
+                        "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      }>
                         {task.priority}
                       </Badge>
                     </TableCell>
@@ -327,10 +338,15 @@ export default function DashboardPage() {
             <CardDescription>Recent system alerts and updates.</CardDescription>
           </CardHeader>
           <CardContent className="flex-1 overflow-auto">
-            <div className="space-y-4">
+            <div className="space-y-2">
               {notifications.map((note) => (
-                <div key={note.id} className="flex items-start gap-4">
-                  <div className="mt-1">
+                <div key={note.id} className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-border/50">
+                  <div className={`mt-0.5 p-2 rounded-full border ${
+                    note.type === "order" ? "bg-emerald-500/10 border-emerald-500/20" :
+                    note.type === "system" ? "bg-blue-500/10 border-blue-500/20" :
+                    note.type === "hr" ? "bg-purple-500/10 border-purple-500/20" :
+                    "bg-amber-500/10 border-amber-500/20"
+                  }`}>
                     {note.type === "order" && <ShoppingCart className="w-4 h-4 text-emerald-500" />}
                     {note.type === "system" && <Bell className="w-4 h-4 text-blue-500" />}
                     {note.type === "hr" && <Users className="w-4 h-4 text-purple-500" />}

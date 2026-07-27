@@ -9,17 +9,19 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus, Search, MoreHorizontal, Trash2 } from "lucide-react"
+import { Plus, Search, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { useStore, Product } from "@/store/useStore"
 
 export default function ProductsPage() {
   const [search, setSearch] = React.useState("")
   const [isAddOpen, setIsAddOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [editingProduct, setEditingProduct] = React.useState<Product | null>(null)
   const { hasPermission } = useAuth()
   const canManage = hasPermission(["superadmin", "admin", "inventory_manager"])
 
-  const { products, addProduct, deleteProduct } = useStore()
+  const { products, addProduct, updateProduct, deleteProduct } = useStore()
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -50,6 +52,37 @@ export default function ProductsPage() {
     
     addProduct(newProduct)
     setIsAddOpen(false)
+  }
+
+  const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingProduct) return
+    const formData = new FormData(e.currentTarget)
+    
+    const stock = Number(formData.get("stock"))
+    const minStock = Number(formData.get("minStock"))
+    let status: Product["status"] = "In Stock"
+    if (stock === 0) status = "Out of Stock"
+    else if (stock <= minStock) status = "Low Stock"
+
+    updateProduct(editingProduct.id, {
+      name: formData.get("name") as string,
+      category: formData.get("category") as string,
+      brand: formData.get("brand") as string,
+      warehouse: formData.get("warehouse") as string,
+      stock,
+      minStock,
+      price: `$${formData.get("price")}`,
+      status
+    })
+    
+    setIsEditOpen(false)
+    setEditingProduct(null)
+  }
+
+  const openEdit = (product: Product) => {
+    setEditingProduct(product)
+    setIsEditOpen(true)
   }
 
   return (
@@ -155,6 +188,9 @@ export default function ProductsPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEdit(p)}>
+                          <Edit className="w-4 h-4 mr-2" /> Edit
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="text-rose-500 focus:text-rose-600" onClick={() => deleteProduct(p.id)}>
                           <Trash2 className="w-4 h-4 mr-2" /> Delete
                         </DropdownMenuItem>
@@ -167,6 +203,58 @@ export default function ProductsPage() {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Edit Product Dialog */}
+      {canManage && (
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            {editingProduct && (
+              <form onSubmit={handleEditSubmit}>
+                <DialogHeader>
+                  <DialogTitle>Edit Product</DialogTitle>
+                  <DialogDescription>Update the product details.</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2"><Label>Product Name</Label><Input name="name" required defaultValue={editingProduct.name} /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2"><Label>Category</Label>
+                      <Select name="category" required defaultValue={editingProduct.category}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Electronics">Electronics</SelectItem>
+                          <SelectItem value="Furniture">Furniture</SelectItem>
+                          <SelectItem value="Accessories">Accessories</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid gap-2"><Label>Brand</Label><Input name="brand" required defaultValue={editingProduct.brand} /></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2"><Label>Price (USD)</Label><Input name="price" type="number" step="0.01" required defaultValue={editingProduct.price.replace('$', '')} /></div>
+                    <div className="grid gap-2"><Label>Warehouse</Label>
+                      <Select name="warehouse" required defaultValue={editingProduct.warehouse}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Main WH">Main WH</SelectItem>
+                          <SelectItem value="East Hub">East Hub</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2"><Label>Stock</Label><Input name="stock" type="number" required defaultValue={editingProduct.stock} /></div>
+                    <div className="grid gap-2"><Label>Min Stock Alert</Label><Input name="minStock" type="number" required defaultValue={editingProduct.minStock} /></div>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                  <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   )
 }

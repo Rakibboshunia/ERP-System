@@ -10,13 +10,15 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Search, Plus, MoreHorizontal, Trash2 } from "lucide-react"
+import { Search, Plus, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useStore, Employee } from "@/store/useStore"
 
 export default function ProfilesPage() {
-  const { employees, addEmployee, deleteEmployee, departments } = useStore()
+  const { employees, addEmployee, updateEmployee, deleteEmployee, departments } = useStore()
   const [search, setSearch] = React.useState("")
   const [isAddOpen, setIsAddOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [editingEmployee, setEditingEmployee] = React.useState<Employee | null>(null)
 
   const filteredEmployees = employees.filter(e => 
     e.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -37,6 +39,26 @@ export default function ProfilesPage() {
     }
     addEmployee(newEmp)
     setIsAddOpen(false)
+  }
+
+  const handleEditEmployee = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingEmployee) return
+    const formData = new FormData(e.currentTarget)
+    updateEmployee(editingEmployee.id, {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      role: formData.get("role") as string,
+      department: formData.get("department") as string,
+      status: formData.get("status") as "Active" | "On Leave" | "Terminated"
+    })
+    setIsEditOpen(false)
+    setEditingEmployee(null)
+  }
+
+  const openEdit = (employee: Employee) => {
+    setEditingEmployee(employee)
+    setIsEditOpen(true)
   }
 
   return (
@@ -146,7 +168,12 @@ export default function ProfilesPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="text-rose-500" onClick={() => deleteEmployee(employee.id)}><Trash2 className="w-4 h-4 mr-2" /> Delete</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEdit(employee)}>
+                          <Edit className="h-4 w-4 mr-2" /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-rose-500" onClick={() => deleteEmployee(employee.id)}>
+                          <Trash2 className="w-4 h-4 mr-2" /> Delete
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -156,6 +183,51 @@ export default function ProfilesPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Edit Employee Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent>
+          {editingEmployee && (
+            <form onSubmit={handleEditEmployee}>
+              <DialogHeader><DialogTitle>Edit Employee</DialogTitle></DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2"><Label>Full Name</Label><Input name="name" required defaultValue={editingEmployee.name} /></div>
+                  <div className="space-y-2"><Label>Email</Label><Input name="email" type="email" required defaultValue={editingEmployee.email} /></div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2"><Label>Job Role</Label><Input name="role" required defaultValue={editingEmployee.role} /></div>
+                  <div className="space-y-2"><Label>Department</Label>
+                    <Select name="department" defaultValue={editingEmployee.department}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {departments.length > 0 ? departments.map(d => <SelectItem key={d.id} value={d.name}>{d.name}</SelectItem>) : <SelectItem value="Engineering">Engineering</SelectItem>}
+                        <SelectItem value="Sales">Sales</SelectItem>
+                        <SelectItem value="HR">HR</SelectItem>
+                        <SelectItem value="Finance">Finance</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2"><Label>Status</Label>
+                  <Select name="status" defaultValue={editingEmployee.status}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="On Leave">On Leave</SelectItem>
+                      <SelectItem value="Terminated">Terminated</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                <Button type="submit">Save Changes</Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

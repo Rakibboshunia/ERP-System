@@ -4,9 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Star, Plus, MoreHorizontal, Trash2 } from "lucide-react"
+import { Star, Plus, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
-import { useStore } from "@/store/useStore"
+import { useStore, SupplierRating } from "@/store/useStore"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -29,9 +29,12 @@ export default function SupplierRatingsPage() {
 
   const ratings = useStore(state => state.supplierRatings)
   const addSupplierRating = useStore(state => state.addSupplierRating)
+  const updateSupplierRating = useStore(state => state.updateSupplierRating)
   const deleteSupplierRating = useStore(state => state.deleteSupplierRating)
 
   const [isAddOpen, setIsAddOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [editingRating, setEditingRating] = React.useState<SupplierRating | null>(null)
   const [formData, setFormData] = React.useState({
     name: "",
     onTime: 100,
@@ -52,6 +55,27 @@ export default function SupplierRatingsPage() {
     })
     setIsAddOpen(false)
     setFormData({ name: "", onTime: 100, quality: 5.0, responseTime: "", returns: 0.0 })
+  }
+
+  const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingRating) return
+    const fd = new FormData(e.currentTarget)
+    updateSupplierRating(editingRating.id, {
+      name: fd.get("name") as string,
+      onTime: Number(fd.get("onTime")),
+      quality: Number(fd.get("quality")),
+      responseTime: fd.get("responseTime") as string,
+      returns: Number(fd.get("returns")),
+      overall: Number(((Number(fd.get("quality")) + (Number(fd.get("onTime")) / 20)) / 2).toFixed(1))
+    })
+    setIsEditOpen(false)
+    setEditingRating(null)
+  }
+
+  const openEdit = (rating: SupplierRating) => {
+    setEditingRating(rating)
+    setIsEditOpen(true)
   }
 
   return (
@@ -142,6 +166,9 @@ export default function SupplierRatingsPage() {
                         <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEdit(r)}>
+                          <Edit className="mr-2 h-4 w-4" /> Edit
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={() => deleteSupplierRating(r.id)}>
                           <Trash2 className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
@@ -154,6 +181,48 @@ export default function SupplierRatingsPage() {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Edit Rating Dialog */}
+      {canManage && (
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent>
+            {editingRating && (
+              <form onSubmit={handleEdit}>
+                <DialogHeader>
+                  <DialogTitle>Edit Supplier Rating</DialogTitle>
+                  <DialogDescription>Update performance metrics.</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-name" className="text-right">Supplier</Label>
+                    <Input id="edit-name" name="name" defaultValue={editingRating.name} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-onTime" className="text-right">On-Time %</Label>
+                    <Input id="edit-onTime" name="onTime" type="number" max="100" defaultValue={editingRating.onTime} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-quality" className="text-right">Quality (1-5)</Label>
+                    <Input id="edit-quality" name="quality" type="number" step="0.1" max="5" defaultValue={editingRating.quality} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-responseTime" className="text-right">Response Time</Label>
+                    <Input id="edit-responseTime" name="responseTime" defaultValue={editingRating.responseTime} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-returns" className="text-right">Return Rate %</Label>
+                    <Input id="edit-returns" name="returns" type="number" step="0.1" defaultValue={editingRating.returns} className="col-span-3" required />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                  <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   )
 }

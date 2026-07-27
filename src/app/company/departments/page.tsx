@@ -8,15 +8,17 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus, MoreHorizontal, Trash2 } from "lucide-react"
+import { Plus, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { useStore, Department } from "@/store/useStore"
 
 export default function DepartmentsPage() {
   const { hasPermission } = useAuth()
   const isAdmin = hasPermission(["superadmin", "admin"])
-  const { branches, departments, addDepartment, deleteDepartment } = useStore()
+  const { branches, departments, addDepartment, updateDepartment, deleteDepartment } = useStore()
   const [isDeptOpen, setIsDeptOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [editingDept, setEditingDept] = React.useState<Department | null>(null)
 
   const handleAddDepartment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -30,6 +32,25 @@ export default function DepartmentsPage() {
     }
     addDepartment(newDept)
     setIsDeptOpen(false)
+  }
+
+  const handleEditDepartment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingDept) return
+    const formData = new FormData(e.currentTarget)
+    updateDepartment(editingDept.id, {
+      name: formData.get("name") as string,
+      branch: formData.get("branch") as string,
+      head: formData.get("head") as string,
+      empCount: Number(formData.get("empCount")) || 0
+    })
+    setIsEditOpen(false)
+    setEditingDept(null)
+  }
+
+  const openEdit = (dept: Department) => {
+    setEditingDept(dept)
+    setIsEditOpen(true)
   }
 
   return (
@@ -86,7 +107,12 @@ export default function DepartmentsPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="text-rose-500" onClick={() => deleteDepartment(dept.id)}><Trash2 className="h-4 w-4 mr-2" /> Delete</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEdit(dept)}>
+                          <Edit className="h-4 w-4 mr-2" /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-rose-500" onClick={() => deleteDepartment(dept.id)}>
+                          <Trash2 className="h-4 w-4 mr-2" /> Delete
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -96,6 +122,37 @@ export default function DepartmentsPage() {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Edit Department Dialog */}
+      {isAdmin && (
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent>
+            {editingDept && (
+              <form onSubmit={handleEditDepartment}>
+                <DialogHeader><DialogTitle>Edit Department</DialogTitle></DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2"><Label>Department Name</Label><Input name="name" required defaultValue={editingDept.name} /></div>
+                  <div className="space-y-2"><Label>Assigned Branch</Label>
+                    <Select name="branch" defaultValue={editingDept.branch}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {branches.map(b => <SelectItem key={b.id} value={b.name}>{b.name}</SelectItem>)}
+                        <SelectItem value="All Branches">All Branches</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2"><Label>Department Head</Label><Input name="head" required defaultValue={editingDept.head} /></div>
+                  <div className="space-y-2"><Label>Initial Employee Count</Label><Input name="empCount" type="number" defaultValue={editingDept.empCount} /></div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                  <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   )
 }

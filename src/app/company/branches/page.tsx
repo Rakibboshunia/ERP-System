@@ -9,15 +9,17 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus, MoreHorizontal, Trash2 } from "lucide-react"
+import { Plus, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { useStore, Branch } from "@/store/useStore"
 
 export default function BranchesPage() {
   const { hasPermission } = useAuth()
   const isAdmin = hasPermission(["superadmin", "admin"])
-  const { branches, addBranch, deleteBranch } = useStore()
+  const { branches, addBranch, updateBranch, deleteBranch } = useStore()
   const [isBranchOpen, setIsBranchOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [editingBranch, setEditingBranch] = React.useState<Branch | null>(null)
 
   const handleAddBranch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -31,6 +33,25 @@ export default function BranchesPage() {
     }
     addBranch(newBranch)
     setIsBranchOpen(false)
+  }
+
+  const handleEditBranch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingBranch) return
+    const formData = new FormData(e.currentTarget)
+    updateBranch(editingBranch.id, {
+      name: formData.get("name") as string,
+      location: formData.get("location") as string,
+      head: formData.get("head") as string,
+      status: formData.get("status") as "Active" | "Inactive"
+    })
+    setIsEditOpen(false)
+    setEditingBranch(null)
+  }
+
+  const openEdit = (branch: Branch) => {
+    setEditingBranch(branch)
+    setIsEditOpen(true)
   }
 
   return (
@@ -91,7 +112,12 @@ export default function BranchesPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="text-rose-500" onClick={() => deleteBranch(branch.id)}><Trash2 className="h-4 w-4 mr-2" /> Delete</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEdit(branch)}>
+                          <Edit className="h-4 w-4 mr-2" /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-rose-500" onClick={() => deleteBranch(branch.id)}>
+                          <Trash2 className="h-4 w-4 mr-2" /> Delete
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -101,6 +127,34 @@ export default function BranchesPage() {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Edit Branch Dialog */}
+      {isAdmin && (
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent>
+            {editingBranch && (
+              <form onSubmit={handleEditBranch}>
+                <DialogHeader><DialogTitle>Edit Branch</DialogTitle></DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2"><Label>Branch Name</Label><Input name="name" required defaultValue={editingBranch.name} /></div>
+                  <div className="space-y-2"><Label>Location</Label><Input name="location" required defaultValue={editingBranch.location} /></div>
+                  <div className="space-y-2"><Label>Branch Head</Label><Input name="head" required defaultValue={editingBranch.head} /></div>
+                  <div className="space-y-2"><Label>Status</Label>
+                    <Select name="status" defaultValue={editingBranch.status}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="Active">Active</SelectItem><SelectItem value="Inactive">Inactive</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                  <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   )
 }

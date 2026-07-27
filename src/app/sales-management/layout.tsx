@@ -16,11 +16,6 @@ export default function SalesLayout({ children }: { children: React.ReactNode })
           <h1 className="text-3xl font-bold tracking-tight mb-2">Sales Management</h1>
           <p className="text-muted-foreground">Manage the complete order-to-cash cycle from quotations to returns.</p>
         </div>
-        {canManage && (
-          <Button className="flex items-center gap-2">
-            <Plus className="w-4 h-4" /> New Quotation
-          </Button>
-        )}
       </div>
 
       {/* KPI Cards */}

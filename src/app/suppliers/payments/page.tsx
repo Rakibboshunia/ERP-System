@@ -4,9 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Plus, MoreHorizontal, Trash2 } from "lucide-react"
+import { Plus, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
-import { useStore } from "@/store/useStore"
+import { useStore, SupplierPayment } from "@/store/useStore"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -18,10 +18,13 @@ export default function SupplierPaymentsPage() {
 
   const payments = useStore(state => state.supplierPayments)
   const addPayment = useStore(state => state.addSupplierPayment)
+  const updatePayment = useStore(state => state.updateSupplierPayment)
   const updatePaymentStatus = useStore(state => state.updateSupplierPaymentStatus)
   const deletePayment = useStore(state => state.deleteSupplierPayment)
 
   const [isAddOpen, setIsAddOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [editingPayment, setEditingPayment] = React.useState<SupplierPayment | null>(null)
   const [formData, setFormData] = React.useState({
     supplier: "",
     invoiceNo: "",
@@ -42,6 +45,28 @@ export default function SupplierPaymentsPage() {
     })
     setIsAddOpen(false)
     setFormData({ supplier: "", invoiceNo: "", amount: "", dueDate: "", daysLeft: 5 })
+  }
+
+  const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingPayment) return
+    const fd = new FormData(e.currentTarget)
+    const daysLeft = Number(fd.get("daysLeft"))
+    updatePayment(editingPayment.id, {
+      supplier: fd.get("supplier") as string,
+      invoiceNo: fd.get("invoiceNo") as string,
+      amount: fd.get("amount") as string,
+      dueDate: fd.get("dueDate") as string,
+      daysLeft,
+      status: editingPayment.status === "Paid" ? "Paid" : daysLeft < 0 ? "Overdue" : daysLeft <= 3 ? "Due Soon" : "Upcoming"
+    })
+    setIsEditOpen(false)
+    setEditingPayment(null)
+  }
+
+  const openEdit = (pay: SupplierPayment) => {
+    setEditingPayment(pay)
+    setIsEditOpen(true)
   }
 
   return (
@@ -136,6 +161,9 @@ export default function SupplierPaymentsPage() {
                             <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => openEdit(pay)}>
+                              <Edit className="mr-2 h-4 w-4" /> Edit
+                            </DropdownMenuItem>
                             <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={() => deletePayment(pay.id)}>
                               <Trash2 className="mr-2 h-4 w-4" /> Delete
                             </DropdownMenuItem>
@@ -148,6 +176,9 @@ export default function SupplierPaymentsPage() {
                           <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => openEdit(pay)}>
+                            <Edit className="mr-2 h-4 w-4" /> Edit
+                          </DropdownMenuItem>
                           <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={() => deletePayment(pay.id)}>
                             <Trash2 className="mr-2 h-4 w-4" /> Delete
                           </DropdownMenuItem>
@@ -161,6 +192,48 @@ export default function SupplierPaymentsPage() {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Edit Payment Dialog */}
+      {canManage && (
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent>
+            {editingPayment && (
+              <form onSubmit={handleEdit}>
+                <DialogHeader>
+                  <DialogTitle>Edit Supplier Payment</DialogTitle>
+                  <DialogDescription>Modify payment details.</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-supplier" className="text-right">Supplier</Label>
+                    <Input id="edit-supplier" name="supplier" defaultValue={editingPayment.supplier} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-invoiceNo" className="text-right">Invoice No.</Label>
+                    <Input id="edit-invoiceNo" name="invoiceNo" defaultValue={editingPayment.invoiceNo} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-amount" className="text-right">Amount</Label>
+                    <Input id="edit-amount" name="amount" defaultValue={editingPayment.amount} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-dueDate" className="text-right">Due Date</Label>
+                    <Input id="edit-dueDate" name="dueDate" defaultValue={editingPayment.dueDate} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-daysLeft" className="text-right">Days Left</Label>
+                    <Input id="edit-daysLeft" name="daysLeft" type="number" defaultValue={editingPayment.daysLeft} className="col-span-3" required />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                  <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   )
 }

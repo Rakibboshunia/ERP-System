@@ -15,12 +15,17 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from "@/components/ui/sidebar"
-import { Building2, LayoutDashboard, Users, UsersRound, Box, ShoppingCart, Banknote, Briefcase, Settings, Truck, ShoppingBag, Receipt, Monitor, HardDrive, FileText, PieChart } from "lucide-react"
+import { 
+  Building2, LayoutDashboard, Users, UsersRound, Box, ShoppingCart, Banknote, Briefcase, Settings, Truck, ShoppingBag, Receipt, Monitor, HardDrive, FileText, PieChart,
+  LineChart, History, Calculator, FileSpreadsheet, Scale, PiggyBank, BookOpen,
+  User, Users2, Building, Layers, MapPin, 
+  CreditCard, UserPlus, Target
+} from "lucide-react"
 import { useAuth, Role } from "@/contexts/auth-context"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 
-const menuItems: { title: string; icon: any; url: string; roles: Role[]; subItems?: {title: string; url: string}[] }[] = [
+const menuItems: { title: string; icon: any; url: string; roles: Role[]; subItems?: {title: string; url: string; icon?: any}[] }[] = [
   { title: "Dashboard", icon: LayoutDashboard, url: "/", roles: ["superadmin", "admin", "sales_manager", "inventory_manager", "employee", "hr", "accountant"] },
   { 
     title: "Company Management", 
@@ -106,14 +111,9 @@ const menuItems: { title: string; icon: any; url: string; roles: Role[]; subItem
     url: "/accounting", 
     roles: ["superadmin", "admin", "accountant"],
     subItems: [
-      { title: "Chart of Accounts", url: "/accounting/coa" },
-      { title: "Journal Entry", url: "/accounting/journal" },
-      { title: "General Ledger", url: "/accounting/ledger" },
-      { title: "Trial Balance", url: "/accounting/trial" },
-      { title: "Profit & Loss", url: "/accounting/pl" },
-      { title: "Balance Sheet", url: "/accounting/balance" },
-      { title: "Expenses", url: "/accounting/expense" },
-      { title: "Income", url: "/accounting/income" },
+      { title: "Chart of Accounts", url: "/accounting/coa", icon: Layers },
+      { title: "Journal Entry", url: "/accounting/journal", icon: FileSpreadsheet },
+      { title: "General Ledger", url: "/accounting/ledger", icon: BookOpen },
     ]
   },
   { 
@@ -267,12 +267,13 @@ export function AppSidebar() {
                         <SidebarMenuButton
                           render={<Link href={sub.url} />}
                           isActive={isSubActive}
-                          className={`rounded-lg transition-all duration-200 py-4 font-medium ${
+                          className={`rounded-lg transition-all duration-200 py-2.5 font-medium ${
                             isSubActive
                               ? "bg-muted text-primary"
                               : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                           }`}
                         >
+                          {sub.icon && <sub.icon className="w-4 h-4 mr-2" />}
                           <span className="text-sm">{sub.title}</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>

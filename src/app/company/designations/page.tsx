@@ -9,15 +9,17 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus, MoreHorizontal, Trash2 } from "lucide-react"
+import { Plus, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { useStore, Designation } from "@/store/useStore"
 
 export default function DesignationsPage() {
   const { hasPermission } = useAuth()
   const isAdmin = hasPermission(["superadmin", "admin"])
-  const { departments, designations, addDesignation, deleteDesignation } = useStore()
+  const { departments, designations, addDesignation, updateDesignation, deleteDesignation } = useStore()
   const [isDesigOpen, setIsDesigOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [editingDesig, setEditingDesig] = React.useState<Designation | null>(null)
 
   const handleAddDesignation = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -30,6 +32,24 @@ export default function DesignationsPage() {
     }
     addDesignation(newDesig)
     setIsDesigOpen(false)
+  }
+
+  const handleEditDesignation = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingDesig) return
+    const formData = new FormData(e.currentTarget)
+    updateDesignation(editingDesig.id, {
+      title: formData.get("title") as string,
+      department: formData.get("department") as string,
+      level: formData.get("level") as string
+    })
+    setIsEditOpen(false)
+    setEditingDesig(null)
+  }
+
+  const openEdit = (desig: Designation) => {
+    setEditingDesig(desig)
+    setIsEditOpen(true)
   }
 
   return (
@@ -94,7 +114,12 @@ export default function DesignationsPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="text-rose-500" onClick={() => deleteDesignation(desig.id)}><Trash2 className="h-4 w-4 mr-2" /> Delete</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEdit(desig)}>
+                          <Edit className="h-4 w-4 mr-2" /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-rose-500" onClick={() => deleteDesignation(desig.id)}>
+                          <Trash2 className="h-4 w-4 mr-2" /> Delete
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -104,6 +129,46 @@ export default function DesignationsPage() {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Edit Designation Dialog */}
+      {isAdmin && (
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent>
+            {editingDesig && (
+              <form onSubmit={handleEditDesignation}>
+                <DialogHeader><DialogTitle>Edit Designation</DialogTitle></DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2"><Label>Job Title</Label><Input name="title" required defaultValue={editingDesig.title} /></div>
+                  <div className="space-y-2"><Label>Department</Label>
+                    <Select name="department" defaultValue={editingDesig.department}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {departments.map(d => <SelectItem key={d.id} value={d.name}>{d.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2"><Label>Level</Label>
+                    <Select name="level" defaultValue={editingDesig.level}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Junior">Junior</SelectItem>
+                        <SelectItem value="Mid">Mid</SelectItem>
+                        <SelectItem value="Senior">Senior</SelectItem>
+                        <SelectItem value="Lead">Lead</SelectItem>
+                        <SelectItem value="Director">Director</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                  <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   )
 }

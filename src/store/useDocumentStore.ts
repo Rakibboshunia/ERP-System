@@ -64,38 +64,24 @@ export const useDocumentStore = create<DocumentState>()(
         { id: "DOC-003", name: "Marketing_Assets_v2.zip", size: "45.2 MB", type: "Archive", uploader: "Marketing", date: "Oct 14, 2026" },
         { id: "DOC-004", name: "Inventory_Count_Oct.xlsx", size: "850 KB", type: "Excel", uploader: "Inv. Manager", date: "Oct 10, 2026" },
       ],
-<<<<<<< HEAD
       
       addFile: (file) => set((state) => ({ files: [...state.files, file] })),
       deleteFile: (id) => set((state) => ({ files: state.files.filter(f => f.id !== id) })),
-=======
-      addFile: (file) => set((state) => { toast.success(`File "${file.name}" uploaded!`); return { files: [...state.files, file] } }),
-      deleteFile: (id) => set((state) => { toast.error('File deleted.', { icon: '🗑️' }); return { files: state.files.filter(f => f.id !== id) } }),
->>>>>>> c2ec537 (Ui changes done)
 
       exportsLog: [
         { id: "EXP-001", type: "Inventory Report", format: "CSV", user: "Admin", date: "Oct 20, 2026", size: "45 KB" },
         { id: "EXP-002", type: "Employee List", format: "PDF", user: "HR Manager", date: "Oct 19, 2026", size: "1.2 MB" },
       ],
-<<<<<<< HEAD
       
       addExport: (exp) => set((state) => ({ exportsLog: [...state.exportsLog, exp] })),
       deleteExport: (id) => set((state) => ({ exportsLog: state.exportsLog.filter(e => e.id !== id) })),
-=======
-      addExport: (exp) => set((state) => { toast.success(`"${exp.type}" exported as ${exp.format}!`); return { exportsLog: [...state.exportsLog, exp] } }),
-      deleteExport: (id) => set((state) => { toast.error('Export log removed.', { icon: '🗑️' }); return { exportsLog: state.exportsLog.filter(e => e.id !== id) } }),
->>>>>>> c2ec537 (Ui changes done)
 
       contracts: [
         { id: "CNT-4001", vendor: "TechParts Inc.", type: "Supplier Agreement", status: "Active", expiry: "Dec 31, 2027" },
         { id: "CNT-4002", vendor: "Global Cleaning", type: "Service Contract", status: "Expiring Soon", expiry: "Nov 15, 2026" },
       ],
-<<<<<<< HEAD
       
       addContract: (contract) => set((state) => ({ contracts: [...state.contracts, contract] })),
-=======
-      addContract: (contract) => set((state) => { toast.success(`Contract for "${contract.vendor}" added!`); return { contracts: [...state.contracts, contract] } }),
->>>>>>> c2ec537 (Ui changes done)
       updateContractStatus: (id, status) => set((state) => ({
         contracts: state.contracts.map(c => c.id === id ? { ...c, status } : c)
       })),

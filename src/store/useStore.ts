@@ -105,6 +105,45 @@ export interface SupplierPayment {
   status: "Upcoming" | "Due Soon" | "Overdue" | "Paid"
 }
 
+// ----- SETTINGS TYPES -----
+export interface CompanySettings {
+  name: string
+  registrationNo: string
+  email: string
+  phone: string
+  address: string
+}
+
+export interface CurrencySettings {
+  baseCurrency: string
+  position: string
+  decimalSeparator: string
+  thousandSeparator: string
+}
+
+export interface EmailSettings {
+  host: string
+  port: string
+  username: string
+  password: string
+  encryption: string
+  fromEmail: string
+}
+
+export interface InvoiceSettings {
+  template: string
+  prefix: string
+  terms: string
+  footerText: string
+}
+
+export interface TaxSettings {
+  taxName: string
+  taxRate: string
+  taxNumber: string
+  pricesIncludeTax: boolean
+}
+
 // ----- STORE INTERFACE -----
 interface AppState {
   // Global App State
@@ -128,19 +167,23 @@ interface AppState {
   // Company State
   branches: Branch[]
   addBranch: (branch: Branch) => void
+  updateBranch: (id: string, data: Partial<Branch>) => void
   deleteBranch: (id: string) => void
 
   departments: Department[]
   addDepartment: (dept: Department) => void
+  updateDepartment: (id: string, data: Partial<Department>) => void
   deleteDepartment: (id: string) => void
 
   designations: Designation[]
   addDesignation: (desig: Designation) => void
+  updateDesignation: (id: string, data: Partial<Designation>) => void
   deleteDesignation: (id: string) => void
 
   // HR State
   employees: Employee[]
   addEmployee: (emp: Employee) => void
+  updateEmployee: (id: string, data: Partial<Employee>) => void
   deleteEmployee: (id: string) => void
 
   leaveRequests: LeaveRequest[]
@@ -150,6 +193,7 @@ interface AppState {
   // Sales Management State
   returns: ReturnRequest[]
   addReturn: (ret: ReturnRequest) => void
+  updateReturn: (id: string, data: Partial<ReturnRequest>) => void
   updateReturnStatus: (id: string, status: "Approved" | "Pending" | "Rejected") => void
   deleteReturn: (id: string) => void
 
@@ -161,8 +205,28 @@ interface AppState {
 
   supplierPayments: SupplierPayment[]
   addSupplierPayment: (payment: SupplierPayment) => void
+  updateSupplierPayment: (id: string, data: Partial<SupplierPayment>) => void
   updateSupplierPaymentStatus: (id: string, status: "Upcoming" | "Due Soon" | "Overdue" | "Paid") => void
   deleteSupplierPayment: (id: string) => void
+
+  // Settings State
+  companySettings: CompanySettings
+  updateCompanySettings: (data: Partial<CompanySettings>) => void
+
+  currencySettings: CurrencySettings
+  updateCurrencySettings: (data: Partial<CurrencySettings>) => void
+
+  emailSettings: EmailSettings
+  updateEmailSettings: (data: Partial<EmailSettings>) => void
+
+  invoiceSettings: InvoiceSettings
+  updateInvoiceSettings: (data: Partial<InvoiceSettings>) => void
+
+  taxSettings: TaxSettings
+  updateTaxSettings: (data: Partial<TaxSettings>) => void
+
+  lastBackupDate: string
+  triggerBackup: () => void
 }
 
 export const useStore = create<AppState>()(
@@ -178,6 +242,72 @@ export const useStore = create<AppState>()(
       setUser: (user) => set({ user }),
       activeFiscalYear: "2026",
       setActiveFiscalYear: (year) => set({ activeFiscalYear: year }),
+
+      // --- SETTINGS STATE ---
+      companySettings: {
+        name: "Enterprise ERP Corp",
+        registrationNo: "REG-99382100",
+        email: "contact@enterprise-erp.com",
+        phone: "+1 (555) 123-4567",
+        address: "123 Innovation Drive\nTech City, TC 90210\nUnited States",
+      },
+      updateCompanySettings: (data) => set((state) => {
+        toast.success('Company settings saved!')
+        return { companySettings: { ...state.companySettings, ...data } }
+      }),
+
+      currencySettings: {
+        baseCurrency: "usd",
+        position: "left",
+        decimalSeparator: "dot",
+        thousandSeparator: "comma",
+      },
+      updateCurrencySettings: (data) => set((state) => {
+        toast.success('Currency settings saved!')
+        return { currencySettings: { ...state.currencySettings, ...data } }
+      }),
+
+      emailSettings: {
+        host: "smtp.mailgun.org",
+        port: "587",
+        username: "postmaster@enterprise-erp.com",
+        password: "secret",
+        encryption: "tls",
+        fromEmail: "noreply@enterprise-erp.com",
+      },
+      updateEmailSettings: (data) => set((state) => {
+        toast.success('SMTP settings saved!')
+        return { emailSettings: { ...state.emailSettings, ...data } }
+      }),
+
+      invoiceSettings: {
+        template: "classic",
+        prefix: "INV-",
+        terms: "Payment is due within 30 days of the invoice date. Late payments are subject to a 1.5% monthly fee.",
+        footerText: "Thank you for your business!",
+      },
+      updateInvoiceSettings: (data) => set((state) => {
+        toast.success('Invoice template saved!')
+        return { invoiceSettings: { ...state.invoiceSettings, ...data } }
+      }),
+
+      taxSettings: {
+        taxName: "VAT",
+        taxRate: "8.00",
+        taxNumber: "TX-9988776655",
+        pricesIncludeTax: false,
+      },
+      updateTaxSettings: (data) => set((state) => {
+        toast.success('Tax settings saved!')
+        return { taxSettings: { ...state.taxSettings, ...data } }
+      }),
+
+      lastBackupDate: "Oct 16, 2026 at 03:00 AM (Auto-backup)",
+      triggerBackup: () => set(() => {
+        const now = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })
+        toast.success('Backup generated successfully!')
+        return { lastBackupDate: `${now} (Manual)` }
+      }),
 
       // --- INVENTORY STATE ---
       products: [
@@ -212,6 +342,7 @@ export const useStore = create<AppState>()(
         { id: "BR-03", name: "European Office", location: "London", head: "Claire Williams", status: "Inactive" },
       ],
       addBranch: (branch) => set((state) => { toast.success(`Branch "${branch.name}" added!`); return { branches: [...state.branches, branch] } }),
+      updateBranch: (id, data) => set((state) => ({ branches: state.branches.map(b => b.id === id ? { ...b, ...data } : b) })),
       deleteBranch: (id) => set((state) => { toast.error('Branch deleted.', { icon: '🗑️' }); return { branches: state.branches.filter((b) => b.id !== id) } }),
 
       departments: [
@@ -220,6 +351,7 @@ export const useStore = create<AppState>()(
         { id: "D-03", name: "Human Resources", branch: "Headquarters", head: "Frank Miller", empCount: 8 },
       ],
       addDepartment: (dept) => set((state) => { toast.success(`Department "${dept.name}" added!`); return { departments: [...state.departments, dept] } }),
+      updateDepartment: (id, data) => set((state) => ({ departments: state.departments.map(d => d.id === id ? { ...d, ...data } : d) })),
       deleteDepartment: (id) => set((state) => { toast.error('Department deleted.', { icon: '🗑️' }); return { departments: state.departments.filter((d) => d.id !== id) } }),
 
       designations: [
@@ -228,6 +360,7 @@ export const useStore = create<AppState>()(
         { id: "DS-03", title: "HR Generalist", department: "Human Resources", level: "Junior" },
       ],
       addDesignation: (desig) => set((state) => { toast.success(`Designation "${desig.title}" added!`); return { designations: [...state.designations, desig] } }),
+      updateDesignation: (id, data) => set((state) => ({ designations: state.designations.map(d => d.id === id ? { ...d, ...data } : d) })),
       deleteDesignation: (id) => set((state) => { toast.error('Designation deleted.', { icon: '🗑️' }); return { designations: state.designations.filter((d) => d.id !== id) } }),
 
       // --- HR STATE ---
@@ -239,6 +372,7 @@ export const useStore = create<AppState>()(
         { id: "EMP-005", name: "Evan Wright", email: "evan@acme.corp", role: "Accountant", department: "Finance", status: "Terminated" },
       ],
       addEmployee: (emp) => set((state) => { toast.success(`Employee "${emp.name}" added!`); return { employees: [...state.employees, emp] } }),
+      updateEmployee: (id, data) => set((state) => ({ employees: state.employees.map(e => e.id === id ? { ...e, ...data } : e) })),
       deleteEmployee: (id) => set((state) => { toast.error('Employee removed.', { icon: '🗑️' }); return { employees: state.employees.filter((e) => e.id !== id) } }),
 
       leaveRequests: [
@@ -259,6 +393,7 @@ export const useStore = create<AppState>()(
         { id: "RMA-6003", invoiceRef: "INV-4203", customer: "Oscorp", items: 3, reason: "Customer changed mind", amount: "$1,620.00", date: "Oct 15, 2026", status: "Rejected" },
       ],
       addReturn: (ret) => set((state) => { toast.success(`Return "${ret.id}" created!`); return { returns: [...state.returns, ret] } }),
+      updateReturn: (id, data) => set((state) => ({ returns: state.returns.map(r => r.id === id ? { ...r, ...data } : r) })),
       updateReturnStatus: (id, status) => set((state) => {
         toast(status === 'Approved' ? 'Return approved!' : status === 'Rejected' ? 'Return rejected.' : 'Status updated.')
         return { returns: state.returns.map(r => r.id === id ? { ...r, status } : r) }
@@ -284,6 +419,7 @@ export const useStore = create<AppState>()(
         { id: "PAY-203", supplier: "OfficeWorld Supplies", invoiceNo: "INV-7721", amount: "$780.00", dueDate: "Oct 15, 2026", daysLeft: -2, status: "Overdue" },
       ],
       addSupplierPayment: (payment) => set((state) => { toast.success(`Payment for "${payment.supplier}" added!`); return { supplierPayments: [...state.supplierPayments, payment] } }),
+      updateSupplierPayment: (id, data) => set((state) => ({ supplierPayments: state.supplierPayments.map(p => p.id === id ? { ...p, ...data } : p) })),
       updateSupplierPaymentStatus: (id, status) => set((state) => {
         toast.success(`Payment status updated to "${status}".`)
         return { supplierPayments: state.supplierPayments.map(p => p.id === id ? { ...p, status } : p) }

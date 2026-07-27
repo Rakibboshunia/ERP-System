@@ -16,18 +16,6 @@ export default function CRMLayout({ children }: { children: React.ReactNode }) {
           <h1 className="text-3xl font-bold tracking-tight mb-2">Customer Relationship Management</h1>
           <p className="text-muted-foreground">Manage your entire sales pipeline, customers, and interactions.</p>
         </div>
-        {canManageCRM && (
-          <Button 
-            className="flex items-center gap-2 btn-gradient rounded-full px-6 shadow-md shadow-primary/20"
-            onClick={() => {
-              toast.success("New CRM Record", {
-                description: "The record was created successfully.",
-              })
-            }}
-          >
-            <Plus className="w-4 h-4" /> Add Record
-          </Button>
-        )}
       </div>
 
       <div className="w-full">

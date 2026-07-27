@@ -4,9 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Plus, MoreHorizontal, Trash2 } from "lucide-react"
+import { Plus, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
-import { useStore } from "@/store/useStore"
+import { useStore, ReturnRequest } from "@/store/useStore"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,10 +19,13 @@ export default function ReturnsPage() {
 
   const returns = useStore(state => state.returns)
   const addReturn = useStore(state => state.addReturn)
+  const updateReturn = useStore(state => state.updateReturn)
   const updateReturnStatus = useStore(state => state.updateReturnStatus)
   const deleteReturn = useStore(state => state.deleteReturn)
 
   const [isAddOpen, setIsAddOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [editingReturn, setEditingReturn] = React.useState<ReturnRequest | null>(null)
   const [formData, setFormData] = React.useState({
     invoiceRef: "",
     customer: "",
@@ -44,6 +47,26 @@ export default function ReturnsPage() {
     })
     setIsAddOpen(false)
     setFormData({ invoiceRef: "", customer: "", items: 1, reason: "", amount: "" })
+  }
+
+  const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingReturn) return
+    const fd = new FormData(e.currentTarget)
+    updateReturn(editingReturn.id, {
+      invoiceRef: fd.get("invoiceRef") as string,
+      customer: fd.get("customer") as string,
+      items: Number(fd.get("items")),
+      reason: fd.get("reason") as string,
+      amount: fd.get("amount") as string,
+    })
+    setIsEditOpen(false)
+    setEditingReturn(null)
+  }
+
+  const openEdit = (ret: ReturnRequest) => {
+    setEditingReturn(ret)
+    setIsEditOpen(true)
   }
 
   return (
@@ -143,6 +166,9 @@ export default function ReturnsPage() {
                           <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => openEdit(r)}>
+                            <Edit className="mr-2 h-4 w-4" /> Edit
+                          </DropdownMenuItem>
                           <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={() => deleteReturn(r.id)}>
                             <Trash2 className="mr-2 h-4 w-4" /> Delete
                           </DropdownMenuItem>
@@ -156,6 +182,48 @@ export default function ReturnsPage() {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Edit Return Dialog */}
+      {canManage && (
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent>
+            {editingReturn && (
+              <form onSubmit={handleEdit}>
+                <DialogHeader>
+                  <DialogTitle>Edit Return Request</DialogTitle>
+                  <DialogDescription>Modify RMA details.</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-invoice" className="text-right">Invoice Ref</Label>
+                    <Input id="edit-invoice" name="invoiceRef" defaultValue={editingReturn.invoiceRef} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-customer" className="text-right">Customer</Label>
+                    <Input id="edit-customer" name="customer" defaultValue={editingReturn.customer} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-items" className="text-right">Items</Label>
+                    <Input id="edit-items" name="items" type="number" defaultValue={editingReturn.items} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-reason" className="text-right">Reason</Label>
+                    <Input id="edit-reason" name="reason" defaultValue={editingReturn.reason} className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-amount" className="text-right">Refund Amt.</Label>
+                    <Input id="edit-amount" name="amount" defaultValue={editingReturn.amount} className="col-span-3" required />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                  <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   )
 }
