@@ -29,9 +29,8 @@ export default function EmployeeReportPage() {
   })
   const deptData = Object.entries(deptMap).map(([name, count], i) => ({ name, count, color: COLORS[i % COLORS.length] }))
 
-  // Static cost data for the table (augmented with real headcount)
   const deptCostRows = deptData.map(d => ({
-    department: d.department,
+    department: d.name,
     headcount: d.count,
     avgSalary: "$75,000",
     totalCost: `$${(d.count * 75000).toLocaleString()}`,
