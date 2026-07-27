@@ -100,14 +100,14 @@ export default function SalesReportPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-xl font-semibold">Sales Performance Report</h2>
         <div className="flex items-center gap-2 flex-wrap">
-          <Select value={year} onValueChange={setYear}>
+          <Select value={year} onValueChange={(v) => v && setYear(v)}>
             <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="2026">FY 2026</SelectItem>
               <SelectItem value="2025">FY 2025</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={quarter} onValueChange={setQuarter}>
+          <Select value={quarter} onValueChange={(v) => v && setQuarter(v)}>
             <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Full Year</SelectItem>
@@ -153,7 +153,7 @@ export default function SalesReportPage() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground)/0.2)" />
                 <XAxis dataKey="month" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={v => `$${v / 1000}k`} />
-                <Tooltip cursor={{ fill: "hsl(var(--muted))" }} contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", backgroundColor: "hsl(var(--background))" }} formatter={(v: number) => `$${v.toLocaleString()}`} />
+                <Tooltip cursor={{ fill: "hsl(var(--muted))" }} contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", backgroundColor: "hsl(var(--background))" }} formatter={(v: any) => `$${Number(v || 0).toLocaleString()}`} />
                 <Legend />
                 <Bar dataKey="sales" fill="#10b981" radius={[4, 4, 0, 0]} name="Actual Sales" />
                 <Bar dataKey="target" fill="#94a3b8" radius={[4, 4, 0, 0]} name="Target" />

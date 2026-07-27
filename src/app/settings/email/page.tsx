@@ -78,7 +78,7 @@ export default function EmailSettingsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Mail Encryption</Label>
-              <Select value={form.encryption} onValueChange={v => setForm({ ...form, encryption: v })}>
+              <Select value={form.encryption} onValueChange={v => setForm({ ...form, encryption: v || "" })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="tls">TLS</SelectItem>

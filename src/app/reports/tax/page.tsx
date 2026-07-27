@@ -80,14 +80,14 @@ export default function TaxReportPage() {
           <p className="text-sm text-muted-foreground">Tax Name: <strong>{taxSettings.taxName}</strong> · Rate: <strong>{taxSettings.taxRate}%</strong> · Reg: {taxSettings.taxNumber}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <Select value={year} onValueChange={setYear}>
+          <Select value={year} onValueChange={(v) => v && setYear(v)}>
             <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="2026">FY 2026</SelectItem>
               <SelectItem value="2025">FY 2025</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={quarterFilter} onValueChange={setQuarterFilter}>
+          <Select value={quarterFilter} onValueChange={(v) => v && setQuarterFilter(v)}>
             <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Quarters</SelectItem>
@@ -133,7 +133,7 @@ export default function TaxReportPage() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground)/0.2)" />
                 <XAxis dataKey="period" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={v => `$${v / 1000}k`} />
-                <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", backgroundColor: "hsl(var(--background))" }} formatter={(v: number) => `$${v.toLocaleString()}`} />
+                <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", backgroundColor: "hsl(var(--background))" }} formatter={(v: any) => `$${Number(v || 0).toLocaleString()}`} />
                 <Bar dataKey="netPayable" fill="#f43f5e" radius={[4, 4, 0, 0]} name="Net Tax Payable" />
               </BarChart>
             </ResponsiveContainer>

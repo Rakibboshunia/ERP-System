@@ -86,14 +86,14 @@ export default function PurchaseReportPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-xl font-semibold">Procurement Analysis</h2>
         <div className="flex items-center gap-2 flex-wrap">
-          <Select value={year} onValueChange={setYear}>
+          <Select value={year} onValueChange={(v) => v && setYear(v)}>
             <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="2026">FY 2026</SelectItem>
               <SelectItem value="2025">FY 2025</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={quarter} onValueChange={setQuarter}>
+          <Select value={quarter} onValueChange={(v) => v && setQuarter(v)}>
             <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Full Year</SelectItem>
@@ -138,7 +138,7 @@ export default function PurchaseReportPage() {
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground)/0.2)" />
               <XAxis dataKey="month" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={v => `$${v / 1000}k`} />
-              <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", backgroundColor: "hsl(var(--background))" }} formatter={(v: number) => `$${v.toLocaleString()}`} />
+              <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid hsl(var(--border))", backgroundColor: "hsl(var(--background))" }} formatter={(v: any) => `$${Number(v || 0).toLocaleString()}`} />
               <ReferenceLine y={avgPurchase} stroke="#f59e0b" strokeDasharray="4 4" label={{ value: "Avg", position: "right", fontSize: 11 }} />
               <Line type="monotone" dataKey="purchases" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, fill: "#3b82f6" }} activeDot={{ r: 6 }} name="Total Purchases" />
             </LineChart>

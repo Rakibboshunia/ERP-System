@@ -65,7 +65,7 @@ export default function EmployeeReportPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-xl font-semibold">Employee Report</h2>
         <div className="flex items-center gap-2">
-          <Select value={deptFilter} onValueChange={setDeptFilter}>
+          <Select value={deptFilter} onValueChange={(v) => v && setDeptFilter(v)}>
             <SelectTrigger className="w-44"><SelectValue placeholder="All Departments" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Departments</SelectItem>
@@ -112,7 +112,7 @@ export default function EmployeeReportPage() {
                     <Pie data={deptData} cx="50%" cy="50%" innerRadius={50} outerRadius={72} dataKey="count" paddingAngle={2}>
                       {deptData.map((d, i) => <Cell key={i} fill={d.color} />)}
                     </Pie>
-                    <Tooltip formatter={(v: number) => `${v} employees`} contentStyle={{ borderRadius: "8px" }} />
+                    <Tooltip formatter={(v: any) => `${v} employees`} contentStyle={{ borderRadius: "8px" }} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="space-y-2 flex-1">

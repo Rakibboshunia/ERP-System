@@ -102,7 +102,7 @@ export default function ThemeSettingsPage() {
         {/* Sidebar Layout */}
         <div className="space-y-3">
           <Label>Sidebar Layout</Label>
-          <Select value={sidebarLayout} onValueChange={setSidebarLayout}>
+          <Select value={sidebarLayout} onValueChange={(v) => v && setSidebarLayout(v)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="full">Full Width</SelectItem>

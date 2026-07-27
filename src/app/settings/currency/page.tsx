@@ -29,7 +29,7 @@ export default function CurrencySettingsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Base Currency</Label>
-              <Select value={form.baseCurrency} onValueChange={v => setForm({ ...form, baseCurrency: v })}>
+              <Select value={form.baseCurrency} onValueChange={v => setForm({ ...form, baseCurrency: v || "" })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="usd">USD ($) - US Dollar</SelectItem>
@@ -43,7 +43,7 @@ export default function CurrencySettingsPage() {
             </div>
             <div className="space-y-2">
               <Label>Currency Position</Label>
-              <Select value={form.position} onValueChange={v => setForm({ ...form, position: v })}>
+              <Select value={form.position} onValueChange={v => setForm({ ...form, position: v || "" })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="left">Left ($100)</SelectItem>
@@ -55,7 +55,7 @@ export default function CurrencySettingsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Decimal Separator</Label>
-              <Select value={form.decimalSeparator} onValueChange={v => setForm({ ...form, decimalSeparator: v })}>
+              <Select value={form.decimalSeparator} onValueChange={v => setForm({ ...form, decimalSeparator: v || "" })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="dot">Dot (100.00)</SelectItem>
@@ -65,7 +65,7 @@ export default function CurrencySettingsPage() {
             </div>
             <div className="space-y-2">
               <Label>Thousand Separator</Label>
-              <Select value={form.thousandSeparator} onValueChange={v => setForm({ ...form, thousandSeparator: v })}>
+              <Select value={form.thousandSeparator} onValueChange={v => setForm({ ...form, thousandSeparator: v || "" })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="comma">Comma (1,000)</SelectItem>

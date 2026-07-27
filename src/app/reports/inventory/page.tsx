@@ -105,7 +105,7 @@ export default function InventoryReportPage() {
                     <Pie data={inventoryValuation} cx="50%" cy="50%" innerRadius={70} outerRadius={100} paddingAngle={2} dataKey="value">
                       {inventoryValuation.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                     </Pie>
-                    <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ borderRadius: "8px" }} />
+                    <Tooltip formatter={(v: any) => `$${Number(v || 0).toLocaleString()}`} contentStyle={{ borderRadius: "8px" }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -168,7 +168,7 @@ export default function InventoryReportPage() {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..." className="pl-8 w-48" />
               </div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select value={statusFilter} onValueChange={(v) => v && setStatusFilter(v)}>
                 <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
