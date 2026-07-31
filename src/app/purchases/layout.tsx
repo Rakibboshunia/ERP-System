@@ -16,11 +16,6 @@ export default function PurchasesLayout({ children }: { children: React.ReactNod
           <h1 className="text-3xl font-bold tracking-tight mb-2">Purchase Management</h1>
           <p className="text-muted-foreground">Manage the full procure-to-pay cycle from requests to supplier invoices.</p>
         </div>
-        {canManage && (
-          <Button className="flex items-center gap-2">
-            <Plus className="w-4 h-4" /> New Purchase Request
-          </Button>
-        )}
       </div>
 
       {/* KPI Cards */}

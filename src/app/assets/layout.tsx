@@ -16,11 +16,6 @@ export default function AssetsLayout({ children }: { children: React.ReactNode }
           <h1 className="text-3xl font-bold tracking-tight mb-2">Asset Management</h1>
           <p className="text-muted-foreground">Track company assets, manage depreciation, and monitor allocations.</p>
         </div>
-        {canManage && (
-          <Button className="flex items-center gap-2">
-            <Plus className="w-4 h-4" /> Register Asset
-          </Button>
-        )}
       </div>
 
       {/* KPIs */}

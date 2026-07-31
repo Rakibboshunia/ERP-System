@@ -16,7 +16,6 @@ export default function AccountingLayout({ children }: { children: React.ReactNo
           <h1 className="text-3xl font-bold tracking-tight mb-2">Accounting & Finance</h1>
           <p className="text-muted-foreground">Manage the general ledger, financial statements, and reporting.</p>
         </div>
-        {canManage && <Button className="flex items-center gap-2"><Plus className="w-4 h-4" />Journal Entry</Button>}
       </div>
 
       {/* KPIs */}

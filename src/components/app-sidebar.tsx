@@ -92,6 +92,18 @@ const menuItems: { title: string; icon: any; url: string; roles: Role[]; subItem
     ]
   },
   { 
+    title: "Suppliers", 
+    icon: Truck, 
+    url: "/suppliers", 
+    roles: ["superadmin", "admin", "inventory_manager", "accountant"],
+    subItems: [
+      { title: "Supplier List", url: "/suppliers/list" },
+      { title: "Purchase History", url: "/suppliers/history" },
+      { title: "Payment Due", url: "/suppliers/payments" },
+      { title: "Supplier Ratings", url: "/suppliers/ratings" },
+    ]
+  },
+  { 
     title: "Sales Management", 
     icon: Receipt, 
     url: "/sales-management", 
@@ -127,18 +139,7 @@ const menuItems: { title: string; icon: any; url: string; roles: Role[]; subItem
       { title: "Asset Allocation", url: "/assets/allocation" },
     ]
   },
-  { 
-    title: "Suppliers", 
-    icon: Truck, 
-    url: "/suppliers", 
-    roles: ["superadmin", "admin", "inventory_manager", "accountant"],
-    subItems: [
-      { title: "Supplier List", url: "/suppliers/list" },
-      { title: "Purchase History", url: "/suppliers/history" },
-      { title: "Payment Due", url: "/suppliers/payments" },
-      { title: "Supplier Ratings", url: "/suppliers/ratings" },
-    ]
-  },
+
   { 
     title: "Projects", 
     icon: Briefcase, 

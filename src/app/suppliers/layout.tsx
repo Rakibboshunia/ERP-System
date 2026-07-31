@@ -16,11 +16,6 @@ export default function SuppliersLayout({ children }: { children: React.ReactNod
           <h1 className="text-3xl font-bold tracking-tight mb-2">Supplier Management</h1>
           <p className="text-muted-foreground">Manage suppliers, track purchase history, and monitor payment obligations.</p>
         </div>
-        {canManage && (
-          <Button className="flex items-center gap-2">
-            <Plus className="w-4 h-4" /> Add Supplier
-          </Button>
-        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
