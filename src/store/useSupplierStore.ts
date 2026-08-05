@@ -1,11 +1,11 @@
 
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import toast from 'react-hot-toast'
+import { persist } from 'zustand/middleware'
+import { create } from 'zustand'
 
 export interface Supplier {
   id: string
-  name: string
+  name: string  
   contact: string
   email: string
   phone: string
@@ -25,11 +25,13 @@ export interface PurchaseHistory {
 interface SupplierState {
   suppliersList: Supplier[]
   addSupplier: (supplier: Supplier) => void
+  updateSupplier: (id: string, updatedData: Partial<Supplier>) => void
   updateSupplierStatus: (id: string, status: "Active" | "Inactive") => void
   deleteSupplier: (id: string) => void
 
   purchaseHistory: PurchaseHistory[]
   addPurchaseHistory: (history: PurchaseHistory) => void
+  updatePurchaseHistory: (id: string, updatedData: Partial<PurchaseHistory>) => void
   updatePurchaseStatus: (id: string, status: "Received" | "Pending" | "Cancelled") => void
   deletePurchaseHistory: (id: string) => void
 }
@@ -44,9 +46,14 @@ export const useSupplierStore = create<SupplierState>()(
         { id: "SUP-004", name: "OfficeWorld Supplies", contact: "Linda Park", email: "l.park@officeworld.com", phone: "+1 (555) 339-0011", category: "Office Supplies", status: "Active" },
       ],
       addSupplier: (supplier) => set((state) => { toast.success(`Supplier "${supplier.name}" added!`); return { suppliersList: [...state.suppliersList, supplier] } }),
-      updateSupplierStatus: (id, status) => set((state) => ({
-        suppliersList: state.suppliersList.map(s => s.id === id ? { ...s, status } : s)
-      })),
+      updateSupplier: (id, updatedData) => set((state) => {
+        toast.success('Supplier details updated!')
+        return { suppliersList: state.suppliersList.map(s => s.id === id ? { ...s, ...updatedData } : s) }
+      }),
+      updateSupplierStatus: (id, status) => set((state) => {
+        toast.success(`Supplier status updated to "${status}".`)
+        return { suppliersList: state.suppliersList.map(s => s.id === id ? { ...s, status } : s) }
+      }),
       deleteSupplier: (id) => set((state) => { toast.error('Supplier deleted.', { icon: '🗑️' }); return { suppliersList: state.suppliersList.filter(s => s.id !== id) } }),
 
       purchaseHistory: [
@@ -56,6 +63,10 @@ export const useSupplierStore = create<SupplierState>()(
         { id: "PO-4024", supplier: "FastShip Logistics", date: "Oct 15, 2026", items: 1, total: "$3,100.00", status: "Cancelled" },
       ],
       addPurchaseHistory: (history) => set((state) => { toast.success(`Purchase order "${history.id}" added!`); return { purchaseHistory: [...state.purchaseHistory, history] } }),
+      updatePurchaseHistory: (id, updatedData) => set((state) => {
+        toast.success('Purchase history updated!')
+        return { purchaseHistory: state.purchaseHistory.map(p => p.id === id ? { ...p, ...updatedData } : p) }
+      }),
       updatePurchaseStatus: (id, status) => set((state) => {
         toast.success(`Order status updated to "${status}".`)
         return { purchaseHistory: state.purchaseHistory.map(p => p.id === id ? { ...p, status } : p) }

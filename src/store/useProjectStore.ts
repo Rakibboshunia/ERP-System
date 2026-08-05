@@ -1,14 +1,14 @@
 
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import toast from 'react-hot-toast'
+import { persist } from 'zustand/middleware'
+import { create } from 'zustand'
 
 export interface Project {
   id: string
   name: string
   client: string
   manager: string
-  team: number
+  team: number  
   deadline: string
   progress: number
   status: "Active" | "On Hold" | "Completed"
