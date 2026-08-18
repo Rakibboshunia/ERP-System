@@ -1,7 +1,7 @@
+
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import toast from 'react-hot-toast'
-
 export interface InventoryCategory {
   id: string
   name: string
@@ -9,7 +9,6 @@ export interface InventoryCategory {
   products: number
   status: "Active" | "Inactive"
 }
-
 export interface Warehouse {
   id: string
   name: string
