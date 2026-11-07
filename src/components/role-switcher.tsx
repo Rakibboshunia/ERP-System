@@ -28,10 +28,12 @@ export function RoleSwitcher() {
           </div>
           <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-background" />
         </div>
+        
         <div className="flex flex-col text-left hidden sm:flex">
           <span className="text-xs font-semibold leading-tight">{user.name}</span>
           <span className="text-[10px] text-muted-foreground capitalize leading-tight">{user.role.replace("_", " ")}</span>
         </div>
+        
       </div>
       <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 px-2 sm:px-3" onClick={handleSignOut}>
         <LogOut className="w-3.5 h-3.5 sm:mr-1.5" />
