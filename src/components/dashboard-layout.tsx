@@ -75,6 +75,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2">
+            
             {/* Quick Actions / AI */}
             <Button
               ref={sparklesRef}
@@ -115,6 +116,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           onClose={() => { setNotifOpen(false); setUnreadCount(0) }}
           anchorRef={bellRef}
         />
+        
         <QuickActionsPanel
           open={qaOpen}
           onClose={() => setQaOpen(false)}
