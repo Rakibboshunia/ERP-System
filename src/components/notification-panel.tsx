@@ -79,6 +79,7 @@ export function NotificationPanel({ open, onClose, anchorRef }: NotificationPane
             </Badge>
           )}
         </div>
+        
         <div className="flex items-center gap-1">
           {unreadCount > 0 && (
             <button
@@ -126,6 +127,7 @@ export function NotificationPanel({ open, onClose, anchorRef }: NotificationPane
                   <p className="text-xs text-muted-foreground mt-0.5 truncate">{n.desc}</p>
                   <p className="text-[10px] text-muted-foreground/70 mt-1">{n.time}</p>
                 </div>
+                
                 <button
                   onClick={e => { e.stopPropagation(); dismiss(n.id) }}
                   className="p-1 rounded-lg opacity-0 hover:opacity-100 group-hover:opacity-100 hover:bg-muted transition-all text-muted-foreground hover:text-foreground"
