@@ -74,6 +74,7 @@ export function QuickActionsPanel({ open, onClose, anchorRef }: QuickActionsPane
         </Button>
       </div>
 
+      
       {/* AI Insight */}
       <div className="mx-4 mt-4 p-3 rounded-xl bg-primary/5 border border-primary/15">
         <div className="flex items-start gap-2">
@@ -85,6 +86,7 @@ export function QuickActionsPanel({ open, onClose, anchorRef }: QuickActionsPane
         </div>
       </div>
 
+      
       {/* Quick Actions grid */}
       <div className="p-4">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">Common Actions</p>
