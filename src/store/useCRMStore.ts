@@ -1,4 +1,3 @@
-
 import toast from 'react-hot-toast'
 import { persist } from 'zustand/middleware'
 import { create } from 'zustand'
@@ -56,6 +55,7 @@ interface CRMState {
   updateOpportunityStage: (id: string, stage: Opportunity["stage"]) => void
   deleteOpportunity: (id: string) => void
 }
+
 
 export const useCRMStore = create<CRMState>()(
   persist(
