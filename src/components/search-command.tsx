@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+
 import { 
   Search, LayoutDashboard, Users, UsersRound, Box, ShoppingBag,
   Receipt, Banknote, HardDrive, Truck, Briefcase, FileText,
@@ -39,6 +40,7 @@ const allModules = [
   { title: "Sales Report", url: "/reports/sales", icon: PieChart, description: "Sales analytics" },
   { title: "Employee Report", url: "/reports/employee", icon: PieChart, description: "HR analytics" },
 ]
+
 
 interface SearchCommandProps {
   open: boolean
@@ -91,6 +93,7 @@ export function SearchCommand({ open, onClose }: SearchCommandProps) {
           </kbd>
         </div>
 
+        
         {/* Results */}
         <div className="py-2 max-h-80 overflow-y-auto">
           {filtered.length === 0 ? (
@@ -122,6 +125,7 @@ export function SearchCommand({ open, onClose }: SearchCommandProps) {
           )}
         </div>
 
+        
         <div className="border-t border-border/50 px-4 py-2 flex items-center gap-4 text-[10px] text-muted-foreground">
           <span><kbd className="bg-muted rounded px-1 font-mono">↵</kbd> Open</span>
           <span><kbd className="bg-muted rounded px-1 font-mono">↑↓</kbd> Navigate</span>
