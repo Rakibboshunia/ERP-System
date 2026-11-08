@@ -94,6 +94,7 @@ export const useDocumentStore = create<DocumentState>()(
       addAttachment: (att) => set((state) => { toast.success('Attachment uploaded!'); return { attachments: [...state.attachments, att] } }),
       deleteAttachment: (id) => set((state) => { toast.error('Attachment deleted.', { icon: '🗑️' }); return { attachments: state.attachments.filter(a => a.id !== id) } }),
     }),
+    
     {
       name: 'erp-document-storage',
     }
